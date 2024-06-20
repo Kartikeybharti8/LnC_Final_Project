@@ -1,22 +1,3 @@
-// import { CafeteriaDatabaseConnection } from './create-connection';
-
-// async function main() {
-//   const dbConnection = new CafeteriaDatabaseConnection();
-//   const connection = await dbConnection.connect()
-//   try {
-//     const query = `
-//       SELECT * FROM User WHERE userName = ? AND userPassword = ?`;
-//     const values = ['Kartikey', 'Kartikey@123'];
-//     const [user] = await connection.query(query, values);
-//     console.log('User:', user);
-//   } catch (err) {
-//     console.error('Error:', err);
-//   } finally {
-//     await connection.end();
-//   }
-// }
-
-
 import { User } from '../models/user';
 import { CafeteriaDatabaseConnection } from './create-connection';
 
@@ -34,8 +15,7 @@ class UserDatabaseManagement {
   async addUserToDb(userName: string, userPassword: string, role: string) {
     const connection = await this.connect();
     try {
-      const query = `
-        INSERT INTO User (userName, userPassword, role) VALUES (?, ?, ?)`;
+      const query = `INSERT INTO user (userName, userPassword, role) VALUES (?, ?, ?)`;
       const values = [userName, userPassword, role];
       await connection.query(query, values);
       console.log('User added successfully');

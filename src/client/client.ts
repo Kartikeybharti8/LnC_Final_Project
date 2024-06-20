@@ -3,9 +3,9 @@ import { CustomMessage } from '../server/server';
 import { RoleOptionsHandler } from './role-options-handler';
 import { getInput } from './input-handler';
 
-const roleOptionsHandler = new RoleOptionsHandler();
 
 const ws = new WebSocket('ws://localhost:8090');
+const roleOptionsHandler = new RoleOptionsHandler(ws);
 
 ws.on('open', () => {
     console.log('Connected to the server');
@@ -43,6 +43,18 @@ const handleServerMessage = (message: CustomMessage) => {
             const user = message.data;
             proceedAfterLogin(user);
             break;
+        case 'addedUser':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Admin");
+            break;
+        case 'updatedMenuPrice':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Admin");
+            break;
+        case 'updatedMenuStatus':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Admin");
+            break;
         case 'error':
             console.log(`Error: ${message.data}`);
             break;
@@ -50,8 +62,6 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log('Unknown action received from server.');
     }
 };
-
-
 
 const proceedAfterLogin = (user: { userName: string; role: string }) => {
     console.log(`Welcome ${user.userName}, Role: ${user.role}`);

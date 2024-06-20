@@ -3,9 +3,10 @@ import { Role } from './user_roles';
 
 export class Employee implements User {
     public role: Role;
-    constructor(public id: string, public username: string) {
-        this.id = id;
-        this.username = username;
+    constructor(public userId: string, public userPassword: string,public userName: string) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPassword = userPassword;
         this.role = Role.EMPLOYEE;
     }
 }

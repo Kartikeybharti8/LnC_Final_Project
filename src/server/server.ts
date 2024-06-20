@@ -1,6 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import UserDatabaseManagement from '../database/user-database';
 import { User } from '../models/user';
+import UserDatabaseManagement from '../database/user-database';
+import MenuItemDatabaseManagement from '../database/menu-database'
 
 export interface CustomMessage {
     action: string;
@@ -33,25 +34,74 @@ class Server {
         console.log(`WebSocket server is running on ws://localhost:${port}`);
     }
 
-    async  handleClientMessage(ws: WebSocket, message: CustomMessage) {
+    async handleClientMessage(ws: WebSocket, message: CustomMessage) {
         const { action, data } = message;        
         if (action === 'login') {
-            this.handleLogin(ws, data);
-        } else {
+            await this.handleLogin(ws, data);
+        } else if (action === 'addUser') {
+            await this.handleAddUser(ws, data);
+        } else if (action === 'addMenuItem') {
+            await this.handleAddMenuItem(ws, data);
+        }else if (action === 'updateMenuPrice') {
+            await this.handleUpdateMenuPrice(ws, data);
+        }else if (action === 'updateMenuStatus') {
+            await this.handleUpdateMenuStatus(ws, data);
+        }
+        else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
     }
     
-
     private async handleLogin(ws: WebSocket, data: any) {
         const userName = data.userName;
         const userPassword = data.userPassword;
         const userDb = new UserDatabaseManagement();
         const user: User = await userDb.fetchUserFromDb(userName, userPassword);
         if (user) {
-            ws.send(JSON.stringify({ action: 'login', data: user}));
+            ws.send(JSON.stringify({ action: 'login', data: user }));
         } else {
-            ws.send(JSON.stringify({ action: 'error', data: 'User not found..' }));
+            ws.send(JSON.stringify({ action: 'error', data: 'User not found.' }));
+        }
+    }
+
+    private async handleAddUser(ws: WebSocket, data: any) {
+        const { userName, userPassword, role } = data;
+        const userDb = new UserDatabaseManagement();
+        try {
+            await userDb.addUserToDb(userName, userPassword, role);
+            ws.send(JSON.stringify({ action: 'addedUser', data: 'User added successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add user.' }));
+        }
+    }
+    private async handleAddMenuItem(ws: WebSocket, data: any) {
+        const { foodName, foodPrice, foodStatus, mealType } = data;
+        const menuDb = new MenuItemDatabaseManagement();
+        try {
+            await menuDb.addmenuItemToDb(foodName, foodPrice, foodStatus, mealType);
+            ws.send(JSON.stringify({ action: 'addedMenuItem', data: 'Menu added successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add Menu Item.' }));
+        }
+    }
+    private async handleUpdateMenuPrice(ws: WebSocket, data: any) {
+        const { itemId, updatedPrice} = data;
+        const menuDb = new MenuItemDatabaseManagement();
+        try {
+            await menuDb.updateMenuPriceDb(itemId, updatedPrice);
+            ws.send(JSON.stringify({ action: 'updatedMenuPrice', data: 'Menu item price updated successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to update price Menu Item.' }));
+        }
+    }
+    private async handleUpdateMenuStatus(ws: WebSocket, data: any) {
+        const { itemId, updatedStatus} = data;
+        const menuDb = new MenuItemDatabaseManagement();
+        try {
+            await menuDb.updateMenuStatusDb(itemId, updatedStatus);
+            ws.send(JSON.stringify({ action: 'updatedMenuStatus', data: 'Menu item Status updated successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to update status of menu Item.' }));
         }
     }
 }
