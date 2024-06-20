@@ -1,5 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import UserService from '../services/new_user_addition_service';
+import UserDatabaseManagement from '../database/user-database';
+import { User } from '../models/user';
 
 export interface CustomMessage {
     action: string;
@@ -14,7 +15,6 @@ class Server {
 
         this.wss.on('connection', (ws: WebSocket) => {
             console.log('New client connected');
-            ws.send(JSON.stringify({ action: 'message', data: 'Welcome! Please choose to login or sign up.' }));
 
             ws.on('message', (message: string) => {
                 try {
@@ -33,38 +33,25 @@ class Server {
         console.log(`WebSocket server is running on ws://localhost:${port}`);
     }
 
-    private handleClientMessage(ws: WebSocket, message: CustomMessage) {
-        const { action, data } = message;
-
-        switch (action) {
-            case 'login':
-                this.handleLogin(ws, data);
-                break;
-            case 'signup':
-                this.handleSignUp(ws, data);
-                break;
-            default:
-                ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
+    async  handleClientMessage(ws: WebSocket, message: CustomMessage) {
+        const { action, data } = message;        
+        if (action === 'login') {
+            this.handleLogin(ws, data);
+        } else {
+            ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
     }
+    
 
-    private handleLogin(ws: WebSocket, data: any) {
-        const { username } = data;
-        const user = UserService.findUser(username);
+    private async handleLogin(ws: WebSocket, data: any) {
+        const userName = data.userName;
+        const userPassword = data.userPassword;
+        const userDb = new UserDatabaseManagement();
+        const user: User = await userDb.fetchUserFromDb(userName, userPassword);
         if (user) {
-            ws.send(JSON.stringify({ action: 'login', data: `Login successful. Welcome back, ${user.username} (Role: ${user.role})` }));
+            ws.send(JSON.stringify({ action: 'login', data: user}));
         } else {
-            ws.send(JSON.stringify({ action: 'error', data: 'User not found. Please sign up.' }));
-        }
-    }
-
-    private handleSignUp(ws: WebSocket, data: any) {
-        const { username, role } = data;
-        const newUser = UserService.addUser(username, role);
-        if (typeof newUser === 'string') {
-            ws.send(JSON.stringify({ action: 'error', data: newUser }));
-        } else {
-            ws.send(JSON.stringify({ action: 'signup', data: `User created: ${newUser.username} (Role: ${newUser.role})` }));
+            ws.send(JSON.stringify({ action: 'error', data: 'User not found..' }));
         }
     }
 }

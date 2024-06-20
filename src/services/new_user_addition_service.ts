@@ -1,38 +1,16 @@
 // src/services/UserService.ts
 import { User } from '../models/user';
-import { Admin } from '../models/admin_user';
-import { Chef } from '../models/chef_user';
-import { Employee } from '../models/employee_user';
 import { Role } from '../models/user_roles';
 
 class UserService {
-    private users: User[] = [];
+    private users: User[] = [
+        { id: "1", userName: 'Ramesh', userPassword: 'Ramesh@123', role: Role.ADMIN },
+        { id: "2", userName: 'Kartikey', userPassword: 'Kartikey@123', role: Role.ADMIN }
+    ];
 
-    addUser(username: string, role: Role): User | string {
-        const userId = String(Math.random() * 7);
-        let newUser: User;
-
-        switch (role) {
-            case Role.ADMIN:
-                newUser = new Admin(userId, username);
-                break;
-            case Role.CHEF:
-                newUser = new Chef(userId, username);
-                break;
-            case Role.EMPLOYEE:
-                newUser = new Employee(userId, username);
-                break;
-            default:
-                return 'Invalid role. Please enter admin, chef, or employee.';
-        }
-
-        this.users.push(newUser);
-        return newUser;
-    }
-
-    findUser(username: string): User | null {
-        return this.users.find(u => u.username === username) || null;
+    findUser(userName: string, userPassword: string): User | null {
+        const user = this.users.find(u => u.userName === userName && u.userPassword === userPassword);
+        return user || null;
     }
 }
-
 export default new UserService();
