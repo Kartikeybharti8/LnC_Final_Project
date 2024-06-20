@@ -1,0 +1,25 @@
+{
+  "name": "recommendation-engine",
+  "version": "1.0.0",
+  "description": "food recommendation system LnC project",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.2",
+    "@types/uuid": "^9.0.8",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@types/mysql": "^2.15.26",
+    "express": "^4.19.2",
+    "mysql2": "^3.10.1",
+    "ws": "^8.17.0"
+  }
+}
