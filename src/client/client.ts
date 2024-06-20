@@ -1,11 +1,9 @@
 import WebSocket from 'ws';
-import * as readline from 'readline';
 import { CustomMessage } from '../server/server';
+import { RoleOptionsHandler } from './role-options-handler';
+import { getInput } from './input-handler';
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const roleOptionsHandler = new RoleOptionsHandler();
 
 const ws = new WebSocket('ws://localhost:8090');
 
@@ -25,17 +23,14 @@ ws.on('message', (message: string) => {
 
 ws.on('close', () => {
     console.log('Disconnected from the server');
-    rl.close();
 });
 
-const promptUserForLogin = () => {
+const promptUserForLogin = async() => {
     console.log("Please login to your account 1st")
-    rl.question('\nEnter your username: ', (userName) => {
-        rl.question('Enter your password: ', (userPassword) => {
-            const message: CustomMessage = { action: 'login', data: { userName, userPassword } };
-            ws.send(JSON.stringify(message));
-        });
-    });
+    const userName = await getInput("Enter your username: ");
+    const userPassword = await getInput("Enter your password: ");
+    const message: CustomMessage = { action: 'login', data: { userName, userPassword } };
+    ws.send(JSON.stringify(message));
 };
 
 
@@ -45,10 +40,8 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log(`Server: ${message.data}`);
             break;
         case 'login':
-            // console.log(`Server: ${message.data}`);
             const user = message.data;
-            console.log(user);
-            promtAfterLogin(user);
+            proceedAfterLogin(user);
             break;
         case 'error':
             console.log(`Error: ${message.data}`);
@@ -58,73 +51,11 @@ const handleServerMessage = (message: CustomMessage) => {
     }
 };
 
-const promtAfterLogin = (user: { userName: string; role: string }) => {
+
+
+const proceedAfterLogin = (user: { userName: string; role: string }) => {
     console.log(`Welcome ${user.userName}, Role: ${user.role}`);
-    switch (user.role) {
-        case 'Admin':
-            showAdminOptions();
-            break;
-        case 'Employee':
-            showEmployeeOptions();
-            break;
-        case 'Chef':
-            showChefOptions();
-            break;
-        default:
-            console.log('Unknown role.');
-    }
-};
-
-const showAdminOptions = () => {
-    console.log('Admin Options:');
-    console.log('1. Add User');
-    console.log('2. Add Menu Item');
-    console.log('3. Delete Menu Item');
-    rl.question('Choose an option: ', (option) => {
-        // Handle admin options here
-        // Example:
-        // if (option === '1') {
-        //     // Add User
-        // } else if (option === '2') {
-        //     // Add Menu Item
-        // }
-        rl.close(); // Close readline for this example, handle appropriately in real use
-    });
-};
-
-const showEmployeeOptions = () => {
-    console.log('Employee Options:');
-    console.log('1. View Menu');
-    console.log('2. Select Food for Menu');
-    console.log('3. Provide Feedback');
-    rl.question('Choose an option: ', (option) => {
-        // Handle employee options here
-        // Example:
-        // if (option === '1') {
-        //     // View Menu
-        // } else if (option === '2') {
-        //     // Select Food for Menu
-        // } else if (option === '3') {
-        //     // Provide Feedback
-        // }
-        rl.close(); // Close readline for this example, handle appropriately in real use
-    });
-};
-
-const showChefOptions = () => {
-    console.log('Chef Options:');
-    console.log('1. Roll Out Menu');
-    console.log('2. View Employee Feedback');
-    rl.question('Choose an option: ', (option) => {
-        // Handle chef options here
-        // Example:
-        // if (option === '1') {
-        //     // Roll Out Menu
-        // } else if (option === '2') {
-        //     // View Employee Feedback
-        // }
-        rl.close(); // Close readline for this example, handle appropriately in real use
-    });
+    roleOptionsHandler.showOptions(user.role);
 };
 
 console.log('WebSocket client is running');
