@@ -1,5 +1,5 @@
 export interface MenuItem {
-    itemId: string;
+    itemId?: string;
     foodName: string;
     foodPrice: string;
     foodStatus: 'Available' | 'Not-Available'

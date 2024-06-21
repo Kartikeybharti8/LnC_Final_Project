@@ -2,6 +2,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { User } from '../models/user';
 import UserDatabaseManagement from '../database/user-database';
 import MenuItemDatabaseManagement from '../database/menu-database'
+import FoodFeedbackDatabaseManagement from '../database/user-feedback'
 
 export interface CustomMessage {
     action: string;
@@ -46,6 +47,8 @@ class Server {
             await this.handleUpdateMenuPrice(ws, data);
         }else if (action === 'updateMenuStatus') {
             await this.handleUpdateMenuStatus(ws, data);
+        }else if (action === 'addEmployeeFeedback') {
+            await this.handleAddEmployeeFeedback(ws, data);
         }
         else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
@@ -104,6 +107,17 @@ class Server {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to update status of menu Item.' }));
         }
     }
+    private async handleAddEmployeeFeedback(ws: WebSocket, data: any) {
+        const { itemId, foodName, userId, userRating, userComment} = data;
+        const feedbackDb = new FoodFeedbackDatabaseManagement();
+        try {
+            await feedbackDb.addUserFeedbackToDb(itemId, foodName, userId, userRating, userComment);
+            ws.send(JSON.stringify({ action: 'addedEmployeeFeedback', data: 'user feedback added successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to update status of menu Item.' }));
+        }
+    }
+    
 }
 
 export default Server;

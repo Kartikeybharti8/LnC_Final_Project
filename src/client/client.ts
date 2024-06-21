@@ -55,6 +55,10 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Admin");
             break;
+        case 'addedEmployeeFeedback':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Employee");
+            break;
         case 'error':
             console.log(`Error: ${message.data}`);
             break;
