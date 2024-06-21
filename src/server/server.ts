@@ -49,7 +49,10 @@ class Server {
             await this.handleUpdateMenuStatus(ws, data);
         }else if (action === 'addEmployeeFeedback') {
             await this.handleAddEmployeeFeedback(ws, data);
+        }else if (action === 'viewMenuItems') {
+            await this.viewMenuItems(ws, data);
         }
+        
         else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
@@ -64,6 +67,15 @@ class Server {
             ws.send(JSON.stringify({ action: 'login', data: user }));
         } else {
             ws.send(JSON.stringify({ action: 'error', data: 'User not found.' }));
+        }
+    }
+    private async viewMenuItems(ws: WebSocket, data: any) {
+        const menuDb = new MenuItemDatabaseManagement();
+        const menuItem = await menuDb.fetchMenuItemsFromDb();
+        if (menuItem) {
+            ws.send(JSON.stringify({ action: 'viewMenuItems', data: menuItem }));
+        } else {
+            ws.send(JSON.stringify({ action: 'error', data: 'Menu Item not found.' }));
         }
     }
 

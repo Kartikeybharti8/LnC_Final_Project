@@ -30,6 +30,8 @@ export class RoleOptionsHandler {
     console.log("1. Add User");
     console.log("2. Add Menu Item");
     console.log("3. Update Menu Item");
+    console.log("4. view Menu Item");
+    
     const option = await getInput("Choose an option by index: ");
 
     switch (option) {
@@ -42,6 +44,9 @@ export class RoleOptionsHandler {
       case "3":
         await this.updateMenuItem();
         break;
+      case "4":
+        await this.viewMenuItems();
+        break;      
       default:
         console.log("Invalid option.");
         await this.showAdminOptions();
@@ -132,6 +137,11 @@ export class RoleOptionsHandler {
 
   private async viewMenu() {
     console.log("View Menu functionality not implemented yet.");
+  }
+  private async viewMenuItems() {
+    const message: CustomMessage = { action: 'viewMenuItems', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log("View Menu.");
   }
 
   private async selectFoodForMenu() {
