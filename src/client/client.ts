@@ -33,7 +33,6 @@ const promptUserForLogin = async() => {
     ws.send(JSON.stringify(message));
 };
 
-
 const handleServerMessage = (message: CustomMessage) => {
     switch (message.action) {
         case 'message':
@@ -59,6 +58,11 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log("Menu Items from db:")
             console.table(message.data)
             roleOptionsHandler.showOptions("Admin");
+            break;
+        case 'viewMenuToRollOut':
+            console.log("Menu Items to Roll Out:")
+            console.table(message.data)
+            roleOptionsHandler.showOptions("Chef");
             break;
         case 'addedEmployeeFeedback':
             console.log(`Server: ${message.data}`);

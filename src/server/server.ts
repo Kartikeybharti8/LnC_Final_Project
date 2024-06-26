@@ -51,8 +51,9 @@ class Server {
             await this.handleAddEmployeeFeedback(ws, data);
         }else if (action === 'viewMenuItems') {
             await this.viewMenuItems(ws, data);
+        }else if (action === 'viewMenuToRollOut') {
+            await this.viewMenuToRollOut(ws, data);
         }
-        
         else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
@@ -74,6 +75,16 @@ class Server {
         const menuItem = await menuDb.fetchMenuItemsFromDb();
         if (menuItem) {
             ws.send(JSON.stringify({ action: 'viewMenuItems', data: menuItem }));
+        } else {
+            ws.send(JSON.stringify({ action: 'error', data: 'Menu Item not found.' }));
+        }
+    }
+
+    private async viewMenuToRollOut(ws: WebSocket, data: any) {
+        const menuDb = new MenuItemDatabaseManagement();
+        const menuItem = await menuDb.fetchMenuItemsFromDb();
+        if (menuItem) {
+            ws.send(JSON.stringify({ action: 'viewMenuToRollOut', data: menuItem }));
         } else {
             ws.send(JSON.stringify({ action: 'error', data: 'Menu Item not found.' }));
         }

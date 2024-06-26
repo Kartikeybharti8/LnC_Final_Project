@@ -55,13 +55,13 @@ export class RoleOptionsHandler {
 
   private async showEmployeeOptions() {
     console.log("Employee Options:");
-    console.log("1. View Menu");
-    console.log("2. Select Food for Menu");
+    console.log("1. View roll out menu");
+    console.log("2. Select Food from Menu items");
     console.log("3. Provide Feedback");
     const option = await getInput("Choose an option by index: ");
     switch (option) {
       case "1":
-        this.viewMenu();
+        // this.viewRolledOutMenu();
         break;
       case "2":
         this.selectFoodForMenu();
@@ -77,14 +77,19 @@ export class RoleOptionsHandler {
 
   private async showChefOptions() {
     console.log("Chef Options:");
-    console.log("1. Roll Out Menu");
-    console.log("2. View Employee Feedback");
+    console.log("1. View items to roll out")
+    console.log("2. Roll Out Menu");
+    console.log("3. View Employee Feedback");
+    console.log("4. Genrate monthly report not yet done");
     const option = await getInput("Choose an option by index: ");
     switch (option) {
-      case "1":
-        this.rollOutMenu();
+      case "1": 
+      this.viewMenutoRollOut();
         break;
       case "2":
+        this.rollOutMenu();
+        break;
+      case "3":
         this.viewEmployeeFeedback();
         break;
       default:
@@ -135,8 +140,10 @@ export class RoleOptionsHandler {
     }
   }
 
-  private async viewMenu() {
-    console.log("View Menu functionality not implemented yet.");
+  private async viewMenutoRollOut() {
+    const message: CustomMessage = { action: 'viewMenuToRollOut', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log("View Menu for roll out."); 
   }
   private async viewMenuItems() {
     const message: CustomMessage = { action: 'viewMenuItems', data: [] };
@@ -162,7 +169,7 @@ export class RoleOptionsHandler {
   }
 
   private async rollOutMenu() {
-    console.log("Roll Out Menu functionality not implemented yet.");
+    
   }
 
   private async viewEmployeeFeedback() {
