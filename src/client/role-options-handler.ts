@@ -77,14 +77,14 @@ export class RoleOptionsHandler {
 
   private async showChefOptions() {
     console.log("Chef Options:");
-    console.log("1. View items to roll out")
+    console.log("1. View Recommended items to roll out")
     console.log("2. Roll Out Menu");
     console.log("3. View Employee Feedback");
     console.log("4. Genrate monthly report not yet done");
     const option = await getInput("Choose an option by index: ");
     switch (option) {
       case "1": 
-      this.viewMenutoRollOut();
+      this.recommendMenuToRollOut();
         break;
       case "2":
         this.rollOutMenu();
@@ -140,10 +140,10 @@ export class RoleOptionsHandler {
     }
   }
 
-  private async viewMenutoRollOut() {
-    const message: CustomMessage = { action: 'viewMenuToRollOut', data: [] };
+  private async recommendMenuToRollOut() {
+    const message: CustomMessage = { action: 'recommendMenuToRollOut', data: [] };
     this.ws.send(JSON.stringify(message));
-    console.log("View Menu for roll out."); 
+    console.log("View Recommended Menu for roll out."); 
   }
   private async viewMenuItems() {
     const message: CustomMessage = { action: 'viewMenuItems', data: [] };
@@ -169,7 +169,12 @@ export class RoleOptionsHandler {
   }
 
   private async rollOutMenu() {
-    
+    const itemId = await getInput("Enter food ItemId: ");
+    const customObjective = "RolloutItem"
+    const notificationMessage = {itemId, customObjective}
+    const message: CustomMessage = { action: 'rolloutMenuNotify', data: notificationMessage };
+    this.ws.send(JSON.stringify(message));
+    console.log("Roll out menu item request sent to server.");
   }
 
   private async viewEmployeeFeedback() {

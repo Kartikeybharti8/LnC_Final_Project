@@ -59,7 +59,7 @@ const handleServerMessage = (message: CustomMessage) => {
             console.table(message.data)
             roleOptionsHandler.showOptions("Admin");
             break;
-        case 'viewMenuToRollOut':
+        case 'recommendMenuToRollOut':
             console.log("Menu Items to Roll Out:")
             console.table(message.data)
             roleOptionsHandler.showOptions("Chef");
@@ -67,6 +67,10 @@ const handleServerMessage = (message: CustomMessage) => {
         case 'addedEmployeeFeedback':
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Employee");
+            break;
+        case 'rolloutMenuNotify':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Chef");
             break;
         case 'error':
             console.log(`Error: ${message.data}`);

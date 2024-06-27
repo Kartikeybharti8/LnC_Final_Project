@@ -3,6 +3,8 @@ import { User } from '../models/user';
 import UserDatabaseManagement from '../database/user-database';
 import MenuItemDatabaseManagement from '../database/menu-database'
 import FoodFeedbackDatabaseManagement from '../database/user-feedback'
+import generateFoodRecommendations from '../services/recommendation_engine'
+import NotificationDatabaseManagement from '../database/notification-database';
 
 export interface CustomMessage {
     action: string;
@@ -51,10 +53,11 @@ class Server {
             await this.handleAddEmployeeFeedback(ws, data);
         }else if (action === 'viewMenuItems') {
             await this.viewMenuItems(ws, data);
-        }else if (action === 'viewMenuToRollOut') {
-            await this.viewMenuToRollOut(ws, data);
-        }
-        else {
+        }else if (action === 'recommendMenuToRollOut') {
+            await this.recommendMenuToRollOut(ws, data);
+        }else if (action === 'rolloutMenuNotify') {
+            await this.rolloutMenuNotify(ws, data);
+        }else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
     }
@@ -80,13 +83,26 @@ class Server {
         }
     }
 
-    private async viewMenuToRollOut(ws: WebSocket, data: any) {
-        const menuDb = new MenuItemDatabaseManagement();
-        const menuItem = await menuDb.fetchMenuItemsFromDb();
-        if (menuItem) {
-            ws.send(JSON.stringify({ action: 'viewMenuToRollOut', data: menuItem }));
+    private async recommendMenuToRollOut(ws: WebSocket, data: any) {
+        const feedbackDb = new FoodFeedbackDatabaseManagement();
+        const feedbackList = await feedbackDb.fetchFeedbackTableFromDB();
+        const recommendations = generateFoodRecommendations(feedbackList);
+        console.log(recommendations)
+        if (recommendations) {
+            ws.send(JSON.stringify({ action: 'recommendMenuToRollOut', data: recommendations }));
         } else {
-            ws.send(JSON.stringify({ action: 'error', data: 'Menu Item not found.' }));
+            ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
+        }
+    }
+    private async rolloutMenuNotify(ws: WebSocket, data: any) {
+        try {
+            const customObjective = data.customObjective;
+            const itemId = data.itemId;
+            const notificationDB = new NotificationDatabaseManagement();
+            await notificationDB.addCustomNotification(itemId, customObjective);
+            ws.send(JSON.stringify({ action: 'rolloutMenuNotify', data: "Menu items rolled out successfully." }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add user.' }));
         }
     }
 
