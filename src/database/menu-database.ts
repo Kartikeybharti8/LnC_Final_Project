@@ -59,12 +59,27 @@ class MenuItemDatabaseManagement {
   async fetchMenuItemsFromDb(): Promise<any> {
     const connection = await this.connect();
     try {
+
       const query = `SELECT * FROM menu_item;`;
       const [queryResponse] = await connection.query(query);
       if (Array.isArray(queryResponse) && queryResponse.length > 0) {
         return queryResponse.slice(0, -1);
       }
+    } catch (err) {
+      console.error("Error fetching menuItem:", err);
       return [];
+    } finally {
+      await connection.end();
+    }
+  }
+  async fetchRolledOutMenuItemsFromDb(itemIds: number[]): Promise<any> {
+    const connection = await this.connect();
+    try {
+      const placeholders = itemIds.map(() => '?').join(', ');
+        const query = `SELECT * FROM menu_item WHERE itemId IN (${placeholders})`;
+        const [menuItems] = await connection.query(query, itemIds);
+        console.log(menuItems);
+        return menuItems;
     } catch (err) {
       console.error("Error fetching menuItem:", err);
     } finally {

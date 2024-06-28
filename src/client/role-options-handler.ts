@@ -61,7 +61,7 @@ export class RoleOptionsHandler {
     const option = await getInput("Choose an option by index: ");
     switch (option) {
       case "1":
-        // this.viewRolledOutMenu();
+        this.viewRolledOutMenu();
         break;
       case "2":
         this.selectFoodForMenu();
@@ -151,6 +151,12 @@ export class RoleOptionsHandler {
     console.log("View Menu.");
   }
 
+  private async viewRolledOutMenu() {
+    const message: CustomMessage = { action: 'viewRolledOutMenu', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log("View Roll Out Menu.");
+  }
+
   private async selectFoodForMenu() {
     console.log("Select Food for Menu functionality not implemented yet.");
   }
@@ -176,7 +182,7 @@ export class RoleOptionsHandler {
     this.ws.send(JSON.stringify(message));
     console.log("Roll out menu item request sent to server.");
   }
-
+  
   private async viewEmployeeFeedback() {
     console.log("View Employee Feedback functionality not implemented yet.");
   }

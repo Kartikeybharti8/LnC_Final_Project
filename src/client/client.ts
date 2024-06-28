@@ -72,6 +72,11 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Chef");
             break;
+        case 'viewRolledOutMenu':
+            console.log("Rolled Out Menu Items:");
+            console.table(message.data)
+            roleOptionsHandler.showOptions("Employee");
+            break;
         case 'error':
             console.log(`Error: ${message.data}`);
             break;

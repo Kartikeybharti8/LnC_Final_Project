@@ -57,6 +57,8 @@ class Server {
             await this.recommendMenuToRollOut(ws, data);
         }else if (action === 'rolloutMenuNotify') {
             await this.rolloutMenuNotify(ws, data);
+        }else if (action === 'viewRolledOutMenu') {
+            await this.viewRolledOutMenu(ws, data);
         }else {
             ws.send(JSON.stringify({ action: 'error', data: 'Unknown action.' }));
         }
@@ -75,14 +77,28 @@ class Server {
     }
     private async viewMenuItems(ws: WebSocket, data: any) {
         const menuDb = new MenuItemDatabaseManagement();
-        const menuItem = await menuDb.fetchMenuItemsFromDb();
-        if (menuItem) {
-            ws.send(JSON.stringify({ action: 'viewMenuItems', data: menuItem }));
+        const menuItems= await menuDb.fetchMenuItemsFromDb();
+        if (menuItems) {
+            ws.send(JSON.stringify({ action: 'viewMenuItems', data: menuItems }));
         } else {
-            ws.send(JSON.stringify({ action: 'error', data: 'Menu Item not found.' }));
+            ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
         }
     }
 
+    private async viewRolledOutMenu(ws: WebSocket, data: any) {
+        const menuDb = new MenuItemDatabaseManagement();
+        const notificationDb = new NotificationDatabaseManagement();
+        const itemObjects = await notificationDb.fetchItemIdsForCustomNotification('RolloutItem');
+        const itemIds = itemObjects.map((item: { itemId: Number }) => item.itemId);
+        // const itemIDs = [2,3]
+        const menuItems = await menuDb.fetchRolledOutMenuItemsFromDb(itemIds);
+        if (menuItems) {
+            ws.send(JSON.stringify({ action: 'viewRolledOutMenu', data: menuItems }));
+        } else {
+            ws.send(JSON.stringify({ action: 'error', data: 'No Rolled Out Menu Items found.' }));
+        }
+    }
+    
     private async recommendMenuToRollOut(ws: WebSocket, data: any) {
         const feedbackDb = new FoodFeedbackDatabaseManagement();
         const feedbackList = await feedbackDb.fetchFeedbackTableFromDB();
