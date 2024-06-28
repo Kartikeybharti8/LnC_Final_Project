@@ -51,6 +51,8 @@ class Server {
             await this.handleUpdateMenuStatus(ws, data);
         }else if (action === 'addEmployeeFeedback') {
             await this.handleAddEmployeeFeedback(ws, data);
+        }else if (action === 'viewEmployeeFeedback') {
+            await this.viewEmployeeFeedback(ws, data);
         }else if (action === 'viewMenuItems') {
             await this.viewMenuItems(ws, data);
         }else if (action === 'recommendMenuToRollOut') {
@@ -101,7 +103,7 @@ class Server {
     
     private async recommendMenuToRollOut(ws: WebSocket, data: any) {
         const feedbackDb = new FoodFeedbackDatabaseManagement();
-        const feedbackList = await feedbackDb.fetchFeedbackTableFromDB();
+        const feedbackList = await feedbackDb.fetchFeedbackFromDB();
         const recommendations = generateFoodRecommendations(feedbackList);
         console.log(recommendations)
         if (recommendations) {
@@ -169,9 +171,19 @@ class Server {
             await feedbackDb.addUserFeedbackToDb(itemId, foodName, userId, userRating, userComment);
             ws.send(JSON.stringify({ action: 'addedEmployeeFeedback', data: 'user feedback added successfully.' }));
         } catch (error) {
-            ws.send(JSON.stringify({ action: 'error', data: 'Failed to update status of menu Item.' }));
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add employee feedback' }));
         }
     }
+    private async viewEmployeeFeedback(ws: WebSocket, data: any) {
+        const feedbackDb = new FoodFeedbackDatabaseManagement();
+        try {
+            const employeesFeeback = await feedbackDb.fetchFeedbackFromDB();
+            ws.send(JSON.stringify({ action: 'viewEmployeeFeedback', data: employeesFeeback }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to view employee feedback' }));
+        }
+    }
+    
     
 }
 

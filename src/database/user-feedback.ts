@@ -24,7 +24,7 @@ export default class FoodFeedbackDatabaseManagement {
       await connection.end();
     }
   }
-  async fetchFeedbackTableFromDB(): Promise<any> {
+  async fetchFeedbackFromDB(): Promise<any> {
     const connection = await this.connect();
     try {
       const query = `SELECT * FROM food_item_feedback ;`;

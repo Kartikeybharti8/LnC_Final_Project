@@ -184,7 +184,9 @@ export class RoleOptionsHandler {
   }
   
   private async viewEmployeeFeedback() {
-    console.log("View Employee Feedback functionality not implemented yet.");
+    const message: CustomMessage = { action: 'viewEmployeeFeedback', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log("View Employee Feedback request sent to server.");
   }
 
   private async updateMenuItemPrice() {
