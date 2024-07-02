@@ -11,11 +11,11 @@ export default class FoodFeedbackDatabaseManagement {
     return await this.dbConnection.connect();
   }
 
-  async addUserFeedbackToDb(itemId: number, foodName: string, userId: number, userRating: number, userComment: string) {
+  async addUserFeedbackToDb(itemId: number, foodName: string, userRating: number, userComment: string) {
     const connection = await this.connect();
     try {
-      const query = `INSERT INTO food_item_feedback (itemId, foodName, userId, userRating, userComment) VALUES (?, ?, ?, ?, ?)`;
-      const values = [itemId, foodName, userId, userRating, userComment];
+      const query = `INSERT INTO food_item_feedback (itemId, foodName, userRating, userComment) VALUES (?, ?, ?, ?)`;
+      const values = [itemId, foodName, userRating, userComment];
       await connection.query(query, values);
       console.log('User feedback added successfully');
     } catch (err) {

@@ -160,7 +160,7 @@ class Server {
         const menuDb = new MenuItemDatabaseManagement();
         try {
             await menuDb.addmenuItemToDb(foodName, foodPrice, foodStatus, mealType);
-            ws.send(JSON.stringify({ action: 'addedMenuItem', data: 'Menu added successfully.' }));
+            ws.send(JSON.stringify({ action: 'addedMenuItem', data: 'Menu item added successfully.' }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add Menu Item.' }));
         }
@@ -186,10 +186,10 @@ class Server {
         }
     }
     private async handleAddEmployeeFeedback(ws: WebSocket, data: any) {
-        const { itemId, foodName, userId, userRating, userComment} = data;
+        const { itemId, foodName, userRating, userComment} = data;
         const feedbackDb = new FoodFeedbackDatabaseManagement();
         try {
-            await feedbackDb.addUserFeedbackToDb(itemId, foodName, userId, userRating, userComment);
+            await feedbackDb.addUserFeedbackToDb(itemId, foodName, userRating, userComment);
             ws.send(JSON.stringify({ action: 'addedEmployeeFeedback', data: 'user feedback added successfully.' }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add employee feedback' }));

@@ -173,11 +173,10 @@ export class RoleOptionsHandler {
   private async provideFeedback() {
     const itemId = await getInput("Enter food ItemId: ");
     const foodName = await getInput("Enter food name: ");
-    const userId = await getInput("Enter food userId: ");
     const userRating = await getInput("Enter food rating: ");
     const userComment = await getInput("Enter food comment: ");
     
-    const userFeedback = {itemId,foodName,userId, userRating, userComment};
+    const userFeedback = {itemId, foodName, userRating, userComment};
     const message: CustomMessage = { action: 'addEmployeeFeedback', data: userFeedback };
     this.ws.send(JSON.stringify(message));
     console.log("Menu item add request sent to server.");

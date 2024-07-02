@@ -50,6 +50,10 @@ const handleServerMessage = (message: CustomMessage) => {
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Admin");
             break;
+        case 'addedMenuItem':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Admin");
+            break;
         case 'updatedMenuPrice':
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Admin");
