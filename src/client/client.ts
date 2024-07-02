@@ -42,6 +42,10 @@ const handleServerMessage = (message: CustomMessage) => {
             const user = message.data;
             proceedAfterLogin(user);
             break;
+        case 'logout':
+            console.log(`Server: ${message.data}`)
+            promptUserForLogin();
+            break;
         case 'addedUser':
             console.log(`Server: ${message.data}`);
             roleOptionsHandler.showOptions("Admin");
@@ -77,10 +81,15 @@ const handleServerMessage = (message: CustomMessage) => {
             console.table(message.data)
             roleOptionsHandler.showOptions("Employee");
             break;
-        case 'viewEmployeeFeedback':
-            console.log("Feedbacks from Employees:");
+        case 'viewMenuItemsWithEmployeeVotes':
+            console.log("Menu Item Voted from Employees:");
             console.table(message.data)
             roleOptionsHandler.showOptions("Chef");
+            break;
+            // viewEmployeeVotes
+        case 'voteRollOutMenuItem':
+            console.log(`Server: ${message.data}`);
+            roleOptionsHandler.showOptions("Employee");
             break;
         case 'error':
             console.log(`Error: ${message.data}`);

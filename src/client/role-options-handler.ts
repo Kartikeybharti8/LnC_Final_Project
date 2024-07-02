@@ -31,9 +31,8 @@ export class RoleOptionsHandler {
     console.log("2. Add Menu Item");
     console.log("3. Update Menu Item");
     console.log("4. view Menu Item");
-    
+    console.log("5. Logout");
     const option = await getInput("Choose an option by index: ");
-
     switch (option) {
       case "1":
         this.addUser();
@@ -46,7 +45,10 @@ export class RoleOptionsHandler {
         break;
       case "4":
         await this.viewMenuItems();
-        break;      
+        break;  
+      case "5":
+        this.logout();
+        break;    
       default:
         console.log("Invalid option.");
         await this.showAdminOptions();
@@ -56,18 +58,22 @@ export class RoleOptionsHandler {
   private async showEmployeeOptions() {
     console.log("Employee Options:");
     console.log("1. View roll out menu");
-    console.log("2. Select Food from Menu items");
+    console.log("2. Vote for item from Menu items");
     console.log("3. Provide Feedback");
+    console.log("4. Logout");
     const option = await getInput("Choose an option by index: ");
     switch (option) {
       case "1":
         this.viewRolledOutMenu();
         break;
       case "2":
-        this.selectFoodForMenu();
+        this.voteRollOutMenuItem();
         break;
       case "3":
         this.provideFeedback();
+        break;
+      case "4":
+        this.logout();
         break;
       default:
         console.log("Invalid option.");
@@ -79,8 +85,8 @@ export class RoleOptionsHandler {
     console.log("Chef Options:");
     console.log("1. View Recommended items to roll out")
     console.log("2. Roll Out Menu");
-    console.log("3. View Employee Feedback");
-    console.log("4. Genrate monthly report not yet done");
+    console.log("3. View Employee Votes");
+    console.log("4. Logout");
     const option = await getInput("Choose an option by index: ");
     switch (option) {
       case "1": 
@@ -90,7 +96,10 @@ export class RoleOptionsHandler {
         this.rollOutMenu();
         break;
       case "3":
-        this.viewEmployeeFeedback();
+        this.viewEmployeeVotes();
+        break;
+      case "4":
+        this.logout();
         break;
       default:
         console.log("Invalid option.");
@@ -98,11 +107,16 @@ export class RoleOptionsHandler {
     }
   }
 
+  private async logout(){
+    const message: CustomMessage = { action: 'logout', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log('Logout request send to server');
+  }
+
   private async addUser() {
     const userName = await getInput("Enter username: ");
     const userPassword = await getInput("Enter password: ");
     const role = await getInput("Enter role (Admin/Employee/Chef): ");
-
     const user = { userName, userPassword, role };
     const message: CustomMessage = { action: 'addUser', data: user };
     this.ws.send(JSON.stringify(message));
@@ -115,7 +129,6 @@ export class RoleOptionsHandler {
     const foodPrice = await getInput("Enter food price: ");
     const foodStatus = await getInput("Enter food status(Available/Not-Available): ");
     const mealType = await getInput("Enter food type: ");
-
     const menuItem = { foodName, foodPrice, foodStatus, mealType};
     const message: CustomMessage = { action: 'addMenuItem', data: menuItem };
     this.ws.send(JSON.stringify(message));
@@ -157,10 +170,6 @@ export class RoleOptionsHandler {
     console.log("View Roll Out Menu.");
   }
 
-  private async selectFoodForMenu() {
-    console.log("Select Food for Menu functionality not implemented yet.");
-  }
-
   private async provideFeedback() {
     const itemId = await getInput("Enter food ItemId: ");
     const foodName = await getInput("Enter food name: ");
@@ -182,11 +191,18 @@ export class RoleOptionsHandler {
     this.ws.send(JSON.stringify(message));
     console.log("Roll out menu item request sent to server.");
   }
-  
-  private async viewEmployeeFeedback() {
-    const message: CustomMessage = { action: 'viewEmployeeFeedback', data: [] };
+  private async voteRollOutMenuItem() {
+    const itemId = await getInput("Enter food ItemId: ");
+    const customObjective = "EmployeeVoted"
+    const notificationMessage = {itemId, customObjective}
+    const message: CustomMessage = { action: 'voteRollOutMenuItem', data: notificationMessage };
     this.ws.send(JSON.stringify(message));
-    console.log("View Employee Feedback request sent to server.");
+    console.log("Vote for Roll out menu item request sent to server.");
+  }
+  private async viewEmployeeVotes() {
+    const message: CustomMessage = { action: 'viewEmployeeVotes', data: [] };
+    this.ws.send(JSON.stringify(message));
+    console.log("View Employee Votes request sent to server.");
   }
 
   private async updateMenuItemPrice() {

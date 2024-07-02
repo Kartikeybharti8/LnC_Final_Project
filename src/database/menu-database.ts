@@ -74,8 +74,9 @@ class MenuItemDatabaseManagement {
   }
   async fetchRolledOutMenuItemsFromDb(itemIds: number[]): Promise<any> {
     const connection = await this.connect();
+    console.log(itemIds);
     try {
-      const placeholders = itemIds.map(() => '?').join(', ');
+        const placeholders = itemIds.map(() => '?').join(', ');
         const query = `SELECT * FROM menu_item WHERE itemId IN (${placeholders})`;
         const [menuItems] = await connection.query(query, itemIds);
         console.log(menuItems);
