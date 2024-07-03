@@ -15,9 +15,14 @@ class UserHandler {
         if (user) {
             ws.send(JSON.stringify({ action: 'login', data: user }));
         } else {
-            ws.send(JSON.stringify({ action: 'error', data: 'User not found.' }));
+            ws.send(JSON.stringify({ action: 'noUserFound', data: 'User not found.' }));
         }
     }
+
+    async handleLogout(ws: WebSocket, data: any){
+            console.log("Client disconnected");
+            ws.send(JSON.stringify({ action: 'logout', data: "You got successfully logged out" }));
+    };
 
     async handleAddUser(ws: WebSocket, data: any) {
         const { userName, userPassword, role } = data;

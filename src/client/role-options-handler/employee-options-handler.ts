@@ -1,12 +1,14 @@
 import WebSocket from 'ws';
-import { getInput } from './../input-handler';
+import InputReader from './../input-handler';
 import { CustomMessage } from '../../server/web-socket-server';
 
 export class EmployeeOptionsHandler {
     private ws: WebSocket;
+    private inputReader: InputReader;
 
-    constructor(ws: WebSocket) {
+    constructor(ws: WebSocket, inputReader: InputReader) {
         this.ws = ws;
+        this.inputReader = inputReader;
     }
 
     public async showOptions() {
@@ -15,7 +17,7 @@ export class EmployeeOptionsHandler {
         console.log("2. Vote for Item from Menu");
         console.log("3. Provide Feedback");
         console.log("4. Logout");
-        const option = await getInput("Choose an option by index: ");
+        const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
                 await this.viewRolledOutMenu();
@@ -42,7 +44,7 @@ export class EmployeeOptionsHandler {
     }
 
     private async voteRollOutMenuItem() {
-        const itemId = await getInput("Enter food ItemId: ");
+        const itemId = await this.inputReader.getInput("Enter food ItemId: ");
         const customObjective = "EmployeeVoted";
         const notificationMessage = { itemId, customObjective };
         const message: CustomMessage = { action: 'voteRollOutMenuItem', data: notificationMessage };
@@ -51,10 +53,10 @@ export class EmployeeOptionsHandler {
     }
 
     private async provideFeedback() {
-        const itemId = await getInput("Enter food ItemId: ");
-        const foodName = await getInput("Enter food name: ");
-        const userRating = await getInput("Enter food rating: ");
-        const userComment = await getInput("Enter food comment: ");
+        const itemId = await this.inputReader.getInput("Enter food ItemId: ");
+        const foodName = await this.inputReader.getInput("Enter food name: ");
+        const userRating = await this.inputReader.getInput("Enter food rating: ");
+        const userComment = await this.inputReader.getInput("Enter food comment: ");
 
         const userFeedback = { itemId, foodName, userRating, userComment };
         const message: CustomMessage = { action: 'addEmployeeFeedback', data: userFeedback };

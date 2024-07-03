@@ -24,7 +24,7 @@ class AppServer {
         this.notificationHandler = new NotificationHandler();
 
         this.wss.on('connection', (ws: WebSocket) => {
-
+            console.log('New client connected');
             ws.on('message', (message: string) => {
                 try {
                     const parsedMessage: CustomMessage = JSON.parse(message);
@@ -45,6 +45,9 @@ class AppServer {
         switch (message.action) {
             case 'login':
                 await this.userHandler.handleLogin(ws, message.data);
+                break;
+            case 'logout':
+                this.userHandler.handleLogout(ws, message.data);
                 break;
             case 'addUser':
                 await this.userHandler.handleAddUser(ws, message.data);

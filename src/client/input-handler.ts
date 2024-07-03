@@ -1,13 +1,26 @@
-import * as readline from "readline";
-export function getInput(promptMessage = ""): Promise<string> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  return new Promise((resolve) => {
-    rl.question(promptMessage, (input) => {
-      rl.close();
-      resolve(input.trim());
-    });
-  });
+import * as readline from 'readline';
+
+class InputReader {
+    private rl: readline.Interface;
+
+    constructor() {
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+    }
+
+    public getInput(promptMessage = ""): Promise<string> {
+        return new Promise((resolve) => {
+            this.rl.question(promptMessage, (input) => {
+                resolve(input.trim());
+            });
+        });
+    }
+
+    public close() {
+        this.rl.close();
+    }
 }
+
+export default InputReader;

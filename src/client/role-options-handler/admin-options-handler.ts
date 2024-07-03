@@ -1,12 +1,14 @@
 import WebSocket from 'ws';
-import { getInput } from './../input-handler';
+import InputReader from './../input-handler';
 import { CustomMessage } from '../../server/web-socket-server';
 
 export class AdminOptionsHandler {
     private ws: WebSocket;
+    private inputReader: InputReader;
 
-    constructor(ws: WebSocket) {
+    constructor(ws: WebSocket, inputReader: InputReader) {
         this.ws = ws;
+        this.inputReader = inputReader;
     }
 
     public async showOptions() {
@@ -16,7 +18,7 @@ export class AdminOptionsHandler {
         console.log("3. Update Menu Item");
         console.log("4. View Menu Item");
         console.log("5. Logout");
-        const option = await getInput("Choose an option by index: ");
+        const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
                 await this.addUser();
@@ -40,9 +42,9 @@ export class AdminOptionsHandler {
     }
 
     private async addUser() {
-        const userName = await getInput("Enter username: ");
-        const userPassword = await getInput("Enter password: ");
-        const role = await getInput("Enter role (Admin/Employee/Chef): ");
+        const userName = await this.inputReader.getInput("Enter username: ");
+        const userPassword = await this.inputReader.getInput("Enter password: ");
+        const role = await this.inputReader.getInput("Enter role (Admin/Employee/Chef): ");
         const user = { userName, userPassword, role };
         const message: CustomMessage = { action: 'addUser', data: user };
         this.ws.send(JSON.stringify(message));
@@ -50,10 +52,10 @@ export class AdminOptionsHandler {
     }
 
     private async addMenuItem() {
-        const foodName = await getInput("Enter food name: ");
-        const foodPrice = await getInput("Enter food price: ");
-        const foodStatus = await getInput("Enter food status (Available/Not-Available): ");
-        const mealType = await getInput("Enter food type: ");
+        const foodName = await this.inputReader.getInput("Enter food name: ");
+        const foodPrice = await this.inputReader.getInput("Enter food price: ");
+        const foodStatus = await this.inputReader.getInput("Enter food status (Available/Not-Available): ");
+        const mealType = await this.inputReader.getInput("Enter food type: ");
         const menuItem = { foodName, foodPrice, foodStatus, mealType };
         const message: CustomMessage = { action: 'addMenuItem', data: menuItem };
         this.ws.send(JSON.stringify(message));
@@ -64,7 +66,7 @@ export class AdminOptionsHandler {
         console.log("Update Menu Item functionality not implemented yet.");
         console.log("1. Update Menu Price");
         console.log("2. Update Menu Status");
-        const option = await getInput("Choose an option by index: ");
+        const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
                 await this.updateMenuItemPrice();
@@ -91,8 +93,8 @@ export class AdminOptionsHandler {
     }
 
     private async updateMenuItemPrice() {
-        const itemId = await getInput("Enter food Item ID: ");
-        const updatedPrice = await getInput("Enter food price: ");
+        const itemId = await this.inputReader.getInput("Enter food Item ID: ");
+        const updatedPrice = await this.inputReader.getInput("Enter food price: ");
         const menuItem = { itemId, updatedPrice };
         const message: CustomMessage = { action: 'updateMenuPrice', data: menuItem };
         this.ws.send(JSON.stringify(message));
@@ -100,8 +102,8 @@ export class AdminOptionsHandler {
     }
 
     private async updateMenuItemStatus() {
-        const itemId = await getInput("Enter food Item ID: ");
-        const updatedStatus = await getInput("Enter food status (Available/Not-Available): ");
+        const itemId = await this.inputReader.getInput("Enter food Item ID: ");
+        const updatedStatus = await this.inputReader.getInput("Enter food status (Available/Not-Available): ");
         const menuItem = { itemId, updatedStatus };
         const message: CustomMessage = { action: 'updateMenuStatus', data: menuItem };
         this.ws.send(JSON.stringify(message));

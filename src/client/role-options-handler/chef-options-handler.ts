@@ -1,12 +1,15 @@
 import WebSocket from 'ws';
-import { getInput } from './../input-handler';
+import InputReader from './../input-handler';
 import { CustomMessage } from '../../server/web-socket-server';
 
 export class ChefOptionsHandler {
     private ws: WebSocket;
+    private inputReader: InputReader;
 
-    constructor(ws: WebSocket) {
+
+    constructor(ws: WebSocket, inputReader: InputReader) {
         this.ws = ws;
+        this.inputReader = inputReader;
     }
 
     public async showOptions() {
@@ -15,7 +18,7 @@ export class ChefOptionsHandler {
         console.log("2. Roll Out Menu");
         console.log("3. View Employee Votes");
         console.log("4. Logout");
-        const option = await getInput("Choose an option by index: ");
+        const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
                 await this.recommendMenuToRollOut();
@@ -42,7 +45,7 @@ export class ChefOptionsHandler {
     }
 
     private async rollOutMenu() {
-        const itemId = await getInput("Enter food ItemId: ");
+        const itemId = await this.inputReader.getInput("Enter food ItemId: ");
         const customObjective = "RolloutItem";
         const notificationMessage = { itemId, customObjective };
         const message: CustomMessage = { action: 'rolloutMenuNotify', data: notificationMessage };

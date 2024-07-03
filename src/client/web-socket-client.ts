@@ -1,14 +1,19 @@
 import WebSocket from 'ws';
 import { CustomMessage } from '../server/web-socket-server';
 import { MessageHandler } from './client-message-handler/message-handler';
+import InputReader from './input-handler';
 
 export class WebSocketClient {
     private ws: WebSocket;
     private messageHandler: MessageHandler;
+    private inputReader: InputReader;
+
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
-        this.messageHandler = new MessageHandler(this.ws);
+        this.inputReader = new InputReader();
+
+        this.messageHandler = new MessageHandler(this.ws, this.inputReader);
         
         this.ws.on('open', this.onOpen.bind(this));
         this.ws.on('message', this.onMessage.bind(this));
