@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { CustomMessage } from '../server/server';
+import { CustomMessage } from '../server/web-socket-server';
 import { MessageHandler } from './client-message-handler/message-handler';
 
 export class WebSocketClient {

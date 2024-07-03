@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 import { getInput } from './../input-handler';
-import { CustomMessage } from '../../server/server';
+import { CustomMessage } from '../../server/web-socket-server';
 
 export class ChefOptionsHandler {
     private ws: WebSocket;

@@ -1,4 +1,4 @@
-import { CustomMessage } from '../../server/server';
+import { CustomMessage } from '../../server/web-socket-server';
 import { RoleOptionsHandler } from '../role-options-handler/role-options-handler';
 import { getInput } from '../input-handler';
 import WebSocket from 'ws';
