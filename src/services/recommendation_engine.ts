@@ -17,8 +17,8 @@ export interface FoodItemRating {
 
 // src/utils/sentimentAnalysis.ts
 export function analyzeSentiment(feedback: string[]): string {
-    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'positive'];
-    const negativeWords = ['bad', 'poor', 'terrible', 'negative'];
+    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'positive', 'delicious', 'well', 'fresh', 'tasty', ''];
+    const negativeWords = ['bad', 'poor', 'terrible', 'negative', 'not'];
 
     let positiveCount = 0;
     let negativeCount = 0;

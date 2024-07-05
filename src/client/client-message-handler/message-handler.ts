@@ -33,6 +33,7 @@ export class MessageHandler {
                 break;
             case 'noUserFound':
                 this.handleNoUserFound(message.data);
+                break;
             case 'addedUser':
                 this.adminHandler.handleAddedUser(message.data);
                 break;

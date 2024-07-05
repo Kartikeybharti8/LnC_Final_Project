@@ -29,12 +29,10 @@ export default class FoodFeedbackDatabaseManagement {
     try {
       const query = `SELECT * FROM food_item_feedback ;`;
       const [queryResponse] = await connection.query(query);
-      if (Array.isArray(queryResponse) && queryResponse.length > 0) {
-        return queryResponse.slice(0, -1);
-      }
-      return [];
+      return queryResponse;
     } catch (err) {
       console.error('Error fetching Feedback:', err);
+      return [];
     } finally {
       await connection.end();
     }

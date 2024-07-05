@@ -59,12 +59,9 @@ class MenuItemDatabaseManagement {
   async fetchMenuItemsFromDb(): Promise<any> {
     const connection = await this.connect();
     try {
-
       const query = `SELECT * FROM menu_item;`;
       const [queryResponse] = await connection.query(query);
-      if (Array.isArray(queryResponse) && queryResponse.length > 0) {
-        return queryResponse.slice(0, -1);
-      }
+      return queryResponse
     } catch (err) {
       console.error("Error fetching menuItem:", err);
       return [];
