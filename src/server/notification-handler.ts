@@ -45,7 +45,7 @@ class NotificationHandler {
             });
 
             const itemIds = Object.keys(itemIdCount).map(Number);
-            const menuItems = await this.menuDb.fetchRolledOutMenuItemsFromDb(itemIds);
+            const menuItems: any = await this.menuDb.fetchRolledOutMenuItemsFromDb(itemIds);
             const menuItemsWithEmployeeVotes = menuItems.map((menuItem: any) => {
                 const { sentiment, average_rating, ...filteredMenuItem } = menuItem;
                 return {

@@ -1,12 +1,14 @@
 import { WebSocket } from 'ws';
 import FoodFeedbackDatabaseManagement from '../database/user-feedback';
-import generateFoodRecommendations from '../services/recommendation_engine';
+import {FoodRecommendationEngine} from '../services/recommendation_engine';
+
 
 class FeedbackHandler {
     private feedbackDb: FoodFeedbackDatabaseManagement;
-
+    private recommendationEngine: FoodRecommendationEngine;
     constructor() {
         this.feedbackDb = new FoodFeedbackDatabaseManagement();
+        this.recommendationEngine = new FoodRecommendationEngine();
     }
 
     async handleAddEmployeeFeedback(ws: WebSocket, data: any) {
@@ -20,11 +22,11 @@ class FeedbackHandler {
     }
 
     async recommendMenuToRollOut(ws: WebSocket, data: any) {
-        const feedbackList = await this.feedbackDb.fetchFeedbackFromDB();
-        const recommendations = generateFoodRecommendations(feedbackList);
-        if (recommendations) {
+        try{
+            const feedbackList = await this.feedbackDb.fetchFeedbackFromDB();
+            const recommendations = await this.recommendationEngine.generateFoodRecommendations(ws, feedbackList);
             ws.send(JSON.stringify({ action: 'recommendMenuToRollOut', data: recommendations }));
-        } else {
+        }catch (error){
             ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
         }
     }

@@ -3,6 +3,7 @@ import UserHandler from './user-handler';
 import MenuHandler from './menu-handler';
 import FeedbackHandler from './user-feedback-handler';
 import NotificationHandler from './notification-handler';
+import RecommendationHandler from './recommendation-handler'
 
 export interface CustomMessage {
     action: string;
@@ -15,6 +16,7 @@ class AppServer {
     private menuHandler: MenuHandler;
     private feedbackHandler: FeedbackHandler;
     private notificationHandler: NotificationHandler;
+    private recommendationHandler: RecommendationHandler;
 
     constructor(port: number) {
         this.wss = new WebSocketServer({ port });
@@ -22,6 +24,7 @@ class AppServer {
         this.menuHandler = new MenuHandler();
         this.feedbackHandler = new FeedbackHandler();
         this.notificationHandler = new NotificationHandler();
+        this.recommendationHandler = new RecommendationHandler();
 
         this.wss.on('connection', (ws: WebSocket) => {
             console.log('New client connected');
@@ -67,6 +70,9 @@ class AppServer {
             case 'viewRolledOutMenu':
                 await this.menuHandler.viewRolledOutMenu(ws, message.data);
                 break;
+            case 'viewToBeDiscardedMenuItemList':
+                await this.recommendationHandler.viewToBeDiscardedMenuItemList(ws, message.data);
+                break;
             case 'rolloutMenuNotify':
                 await this.notificationHandler.rolloutMenuNotify(ws, message.data);
                 break;
@@ -82,6 +88,8 @@ class AppServer {
             case 'recommendMenuToRollOut':
                 await this.feedbackHandler.recommendMenuToRollOut(ws, message.data);
                 break;
+            case 'discardMenuItem':
+                await this.menuHandler.discardMenuItem(ws, message.data);
             default:
                 ws.send(JSON.stringify({ action: 'error', data: 'Invalid action.' }));
         }

@@ -1,4 +1,6 @@
-// Interfaces
+import { WebSocket } from 'ws';
+import RecommendationHandler from '../server/recommendation-handler'
+
 export interface FoodItemFeedback {
     feedbackId: string;
     itemId: string;
@@ -15,91 +17,86 @@ export interface FoodItemRating {
     userCount: number;
 }
 
-// src/utils/sentimentAnalysis.ts
-export function analyzeSentiment(feedback: string[]): string {
-    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'positive', 'delicious', 'well', 'fresh', 'tasty', ''];
-    const negativeWords = ['bad', 'poor', 'terrible', 'negative', 'not'];
-
-    let positiveCount = 0;
-    let negativeCount = 0;
-
-    feedback.forEach(comment => {
-        positiveWords.forEach(word => {
-            if (comment.toLowerCase().includes(word)) {
-                positiveCount++;
-            }
-        });
-        negativeWords.forEach(word => {
-            if (comment.toLowerCase().includes(word)) {
-                negativeCount++;
-            }
-        });
-    });
-
-    if (positiveCount > negativeCount) {
-        return "Most people loved this food, you can try it surely.";
-    } else if (negativeCount > positiveCount) {
-        return "Most people didn't get impressed, but we are improving.";
-    } else {
-        return "You can try this, as some people liked this.";
+export class FoodRecommendationEngine {
+    private recommendationHandler: RecommendationHandler;
+    constructor() {
+        this.recommendationHandler = new RecommendationHandler();
     }
-}
 
-export default function generateFoodRecommendations(feedbackList: FoodItemFeedback[]): FoodItemRating[] {
-    const foodRatingsMap: { [key: string]: { foodName: string, totalRating: number; userCount: number; feedback: string[] } } = {};
+    private async analyzeSentiment(feedback: string[]): Promise<string> {
+        const positiveWords = ['good', 'great', 'excellent', 'amazing', 'positive', 'delicious', 'well', 'fresh', 'tasty', 'yummy', 'mazedaar', 'lajawaab', 'swaadish', 'fresh', 'well cooked', 'sweet', 'chatpata'];
+        const negativeWords = ['bad', 'poor', 'terrible', 'negative', 'not', 'salty', 'ganda', 'no taste', 'tasteless', 'too spicy', 'too sweet', 'burnt', 'not fresh', 'old', 'not well cooked'];
 
-    feedbackList.forEach(feedback => {
-        if (!foodRatingsMap[feedback.itemId]) {
-            foodRatingsMap[feedback.itemId] = { foodName: feedback.foodName, totalRating: 0, userCount: 0, feedback: [] };
+        let positiveCount = 0;
+        let negativeCount = 0;
+
+        feedback.forEach(comment => {
+            positiveWords.forEach(word => {
+                if (comment.toLowerCase().includes(word)) {
+                    positiveCount++;
+                }
+            });
+            negativeWords.forEach(word => {
+                if (comment.toLowerCase().includes(word)) {
+                    negativeCount++;
+                }
+            });
+        });
+
+        if (positiveCount > negativeCount) {
+            return "Most people loved this food, you can try it surely.";
+        } else if (negativeCount > positiveCount) {
+            return "Most people didn't get impressed, but we are improving.";
+        } else {
+            return "You can try this, as some people liked this.";
         }
+    }
 
-        foodRatingsMap[feedback.itemId].totalRating += feedback.userRating;
-        foodRatingsMap[feedback.itemId].userCount += 1;
-        foodRatingsMap[feedback.itemId].feedback.push(feedback.userComment);
-    });
+    public async generateFoodRecommendations(ws: WebSocket,feedbackList: FoodItemFeedback[]): Promise<FoodItemRating[]> {
+        const foodRatingsMap: { [key: string]: { foodName: string, totalRating: number; userCount: number; feedback: string[] } } = {};
 
-    const foodRatings: FoodItemRating[] = Object.keys(foodRatingsMap).map(itemId => {
-        const item = foodRatingsMap[itemId];
-        const averageRating = item.totalRating / item.userCount;
-        const sentiment = analyzeSentiment(item.feedback);
-        
-        return {
-            itemId: itemId,
-            foodName: item.foodName,
-            average_rating: averageRating,
-            sentiment: sentiment,
-            userCount: item.userCount,
-        };
-    });
+        feedbackList.forEach(feedback => {
+            if (!foodRatingsMap[feedback.itemId]) {
+                foodRatingsMap[feedback.itemId] = { foodName: feedback.foodName, totalRating: 0, userCount: 0, feedback: [] };
+            }
 
-    return foodRatings;
+            foodRatingsMap[feedback.itemId].totalRating += feedback.userRating;
+            foodRatingsMap[feedback.itemId].userCount += 1;
+            foodRatingsMap[feedback.itemId].feedback.push(feedback.userComment);
+        });
+
+        const foodRatings: FoodItemRating[] = await Promise.all(Object.keys(foodRatingsMap).map(async itemId => {
+            const item = foodRatingsMap[itemId];
+            const averageRating = item.totalRating / item.userCount;
+            const sentiment = await this.analyzeSentiment(item.feedback);
+
+            return {
+                itemId: itemId,
+                foodName: item.foodName,
+                average_rating: averageRating,
+                sentiment: sentiment,
+                userCount: item.userCount,
+            };
+        }));
+
+        await this.recommendationHandler.storeRecommendationsToDatabase(ws, foodRatings);
+
+        return foodRatings;
+    }
+
 }
 
-// // Sample data
+// // Example usage
 // const feedbackList: FoodItemFeedback[] = [
-//     {
-//         feedbackId: '1',
-//         itemId: '1',
-//         foodName: 'Burger',
-//         userComment: 'Delicious and well-cooked!',
-//         userRating: 4,
-//     },
-//     {
-//         feedbackId: '2',
-//         itemId: '1',
-//         foodName: 'Burger',
-//         userComment: 'Too yummy!!',
-//         userRating: 3,
-//     },
-//     {
-//         feedbackId: '3',
-//         itemId: '2',
-//         foodName: 'Pasta',
-//         userComment: 'Tasty but a bit too salty.',
-//         userRating: 3,
-//     },
+//     { feedbackId: '1', itemId: '101', foodName: 'Pizza', userComment: 'This pizza was really delicious and tasty!', userRating: 5 },
+//     { feedbackId: '2', itemId: '101', foodName: 'Pizza', userComment: 'I loved this pizza, so fresh and well cooked.', userRating: 4 },
+//     { feedbackId: '3', itemId: '102', foodName: 'Burger', userComment: 'The burger was okay, but not great.', userRating: 3 },
+//     { feedbackId: '4', itemId: '102', foodName: 'Burger', userComment: 'Burger was not fresh and too salty.', userRating: 2 },
+//     { feedbackId: '5', itemId: '103', foodName: 'Pasta', userComment: 'Pasta was delicious and well cooked.', userRating: 4 }
 // ];
 
-// // Generate recommendations
-// const recommendations = generateFoodRecommendations(feedbackList);
-// console.log(recommendations);
+// const recommendationEngine = new FoodRecommendationEngine();
+
+// recommendationEngine.generateFoodRecommendations(feedbackList).then(foodRatings => {
+//     console.log('Generated Food Recommendations:', foodRatings);
+// });

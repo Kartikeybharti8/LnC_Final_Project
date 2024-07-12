@@ -56,7 +56,7 @@ class MenuItemDatabaseManagement {
       await connection.end();
     }
   }
-  async fetchMenuItemsFromDb(): Promise<any> {
+  async fetchMenuItemsFromDb() {
     const connection = await this.connect();
     try {
       const query = `SELECT * FROM menu_item;`;
@@ -69,7 +69,7 @@ class MenuItemDatabaseManagement {
       await connection.end();
     }
   }
-  async fetchRolledOutMenuItemsFromDb(itemIds: number[]): Promise<any> {
+  async fetchRolledOutMenuItemsFromDb(itemIds: number[]) {
     const connection = await this.connect();
     console.log(itemIds);
     try {
@@ -80,6 +80,19 @@ class MenuItemDatabaseManagement {
         return menuItems;
     } catch (err) {
       console.error("Error fetching menuItem:", err);
+    } finally {
+      await connection.end();
+    }
+  }
+
+  async discardMenuItemFromDB(itemId: number){
+    const connection = await this.connect();
+    console.log(itemId);
+    try{
+      const query = "DELETE FROM menu_item WHERE itemId = ?"
+      await connection.query(query, itemId);
+    } catch(err){
+      console.error('Error Discarding Menu Item:', err)
     } finally {
       await connection.end();
     }

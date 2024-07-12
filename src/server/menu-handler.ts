@@ -60,6 +60,15 @@ class MenuHandler {
             ws.send(JSON.stringify({ action: 'error', data: 'No Rolled Out Menu Items found.' }));
         }
     }
+
+    async discardMenuItem(ws: WebSocket, data: any) {
+        try{
+            await this.menuDb.discardMenuItemFromDB(data);
+            ws.send(JSON.stringify({ action: 'discardMenuItem', data: "Menu Item deleted Successfully." }));
+        }catch {
+            ws.send(JSON.stringify({ action: 'error', data: 'Error Deleting Menu Item' }));
+        }
+    }
 }
 
 export default MenuHandler;

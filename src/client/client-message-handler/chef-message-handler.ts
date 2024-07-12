@@ -7,20 +7,29 @@ export class ChefMessageHandler {
         this.roleOptionsHandler = roleOptionsHandler;
     }
 
-    public handleRecommendMenuToRollOut = (data: any) => {
-        console.log("Menu Items to Roll Out:");
+    public handleRecommendMenuToRollOut(data: any){
+        console.log("Menu items to Roll Out:");
         console.table(data);
         this.roleOptionsHandler.showOptions("Chef");
     };
 
-    public handleRolloutMenuNotify = (data: any) => {
+    public handleRolloutMenuNotify(data: any){
         console.log(`Server: ${data}`);
         this.roleOptionsHandler.showOptions("Chef");
     };
 
     public handleViewMenuItemsWithEmployeeVotes = (data: any) => {
-        console.log("Menu Item Voted from Employees:");
+        console.log("Menu Items voted from Employees:");
         console.table(data);
         this.roleOptionsHandler.showOptions("Chef");
     };
+    public handleViewToBeDiscardedMenuItemList = (data: any) => {
+        console.log("Menu items to be Discarded:");
+        console.table(data);
+        this.roleOptionsHandler.showOptions("Chef");
+    };
+    public handleDiscardMenuItem(data: any){
+        console.log(`Server: ${data}`);
+        this.roleOptionsHandler.showOptions("Chef");
+    }
 }

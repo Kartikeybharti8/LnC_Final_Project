@@ -67,6 +67,12 @@ export class MessageHandler {
             case 'voteRollOutMenuItem':
                 this.employeeHandler.handleVoteRollOutMenuItem(message.data);
                 break;
+            case 'viewToBeDiscardedMenuItemList':
+                this.chefHandler.handleViewToBeDiscardedMenuItemList(message.data);
+                break;
+            case 'discardMenuItem':
+                this.chefHandler.handleDiscardMenuItem(message.data);
+                break;
             case 'error':
                 this.handleError(message.data);
                 break;
