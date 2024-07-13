@@ -18,7 +18,18 @@ export class EmployeeMessageHandler {
         this.roleOptionsHandler.showOptions("Employee");
     };
 
+    public viewEmployeeToBeDiscardedMenuItemList = (data: any) => {
+        console.log("Menu Items to be discarded:");
+        console.table(data);
+        this.roleOptionsHandler.showOptions("Employee");
+    };
+
     public handleVoteRollOutMenuItem = (data: any) => {
+        console.log(`Server: ${data}`);
+        this.roleOptionsHandler.showOptions("Employee");
+    };
+
+    public handleAddedEmployeeSuggestion = (data: any) => {
         console.log(`Server: ${data}`);
         this.roleOptionsHandler.showOptions("Employee");
     };

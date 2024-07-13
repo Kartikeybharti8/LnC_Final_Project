@@ -90,6 +90,13 @@ class AppServer {
                 break;
             case 'discardMenuItem':
                 await this.menuHandler.discardMenuItem(ws, message.data);
+                break;
+            case 'addEmployeeSuggestion':
+                await this.feedbackHandler.addEmployeeDiscardItemSuggestion(ws, message.data);
+                break;
+            case 'viewDisacrdListSuggestions':
+                await this.feedbackHandler.viewDisacrdListSuggestions(ws, message.data);
+                break;
             default:
                 ws.send(JSON.stringify({ action: 'error', data: 'Invalid action.' }));
         }

@@ -15,8 +15,10 @@ export class EmployeeOptionsHandler {
         console.log("Employee Options:");
         console.log("1. View Rolled Out Menu");
         console.log("2. Vote for Item from Menu");
-        console.log("3. Provide Feedback");
-        console.log("4. Logout");
+        console.log("3. Provide Menu Item Feedback");
+        console.log("4. View menu list to be discarded");
+        console.log("5. Provide Feedback to items before discard")
+        console.log("6. Logout");
         const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
@@ -29,6 +31,12 @@ export class EmployeeOptionsHandler {
                 await this.provideFeedback();
                 break;
             case "4":
+                await this.viewToBeDicardItem();
+                break;
+            case "5":
+                await this.provideSuggestionsToDicardItem();
+                break;
+            case "6":
                 await this.logout();
                 break;
             default:
@@ -40,7 +48,7 @@ export class EmployeeOptionsHandler {
     private async viewRolledOutMenu() {
         const message: CustomMessage = { action: 'viewRolledOutMenu', data: [] };
         this.ws.send(JSON.stringify(message));
-        console.log("View Rolled Out Menu.");
+        console.log("View Rolled Out Menu requested");
     }
 
     private async voteRollOutMenuItem() {
@@ -50,6 +58,23 @@ export class EmployeeOptionsHandler {
         const message: CustomMessage = { action: 'voteRollOutMenuItem', data: notificationMessage };
         this.ws.send(JSON.stringify(message));
         console.log("Vote for Roll out menu item request sent to server.");
+    }
+
+    private async viewToBeDicardItem() {
+        const message: CustomMessage = { action: 'viewToBeDiscardedMenuItemList', data: ["Employee"] };
+        this.ws.send(JSON.stringify(message));
+        console.log("View discard menu item request send to server");
+    }
+
+
+    private async provideSuggestionsToDicardItem() {
+        const itemId = await this.inputReader.getInput("Enter food ItemId: ");
+        const foodName = await this.inputReader.getInput("Enter food name: ");
+        const suggestions = await this.inputReader.getInput("Please enter suggestions to improve: ");
+        const userSuggestions = { itemId, foodName, suggestions };
+        const message: CustomMessage = { action: 'addEmployeeSuggestion', data: userSuggestions };
+        this.ws.send(JSON.stringify(message));
+        console.log("Discard menu item suggestions request sent to server.");
     }
 
     private async provideFeedback() {

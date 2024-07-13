@@ -23,7 +23,7 @@ export class ChefMessageHandler {
         console.table(data);
         this.roleOptionsHandler.showOptions("Chef");
     };
-    public handleViewToBeDiscardedMenuItemList = (data: any) => {
+    public handleChefToBeDiscardedMenuItemList = (data: any) => {
         console.log("Menu items to be Discarded:");
         console.table(data);
         this.roleOptionsHandler.showOptions("Chef");
@@ -32,4 +32,9 @@ export class ChefMessageHandler {
         console.log(`Server: ${data}`);
         this.roleOptionsHandler.showOptions("Chef");
     }
+    public handleViewDiscardItemsSuggestions(data: any){
+        console.table(data);
+        this.roleOptionsHandler.showOptions("Chef");
+    }
+
 }

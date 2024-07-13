@@ -24,6 +24,22 @@ export default class FoodFeedbackDatabaseManagement {
       await connection.end();
     }
   }
+
+  async addEmployeeDiscardItemSuggestionsToDb(itemId: number, foodName: string, suggestions: string) {
+    const connection = await this.connect();
+    try {
+      const query = `INSERT INTO discard_menu_item_suggestion (itemId, foodName, suggestions) VALUES (?, ?, ?)`;
+      const values = [itemId, foodName, suggestions];
+      await connection.query(query, values);
+      console.log('User suggestions added successfully');
+    } catch (err) {
+      console.error('Error adding user suggestions:', err);
+    } finally {
+      await connection.end();
+    }
+  }
+
+
   async fetchFeedbackFromDB(): Promise<any> {
     const connection = await this.connect();
     try {
@@ -32,6 +48,20 @@ export default class FoodFeedbackDatabaseManagement {
       return queryResponse;
     } catch (err) {
       console.error('Error fetching Feedback:', err);
+      return [];
+    } finally {
+      await connection.end();
+    }
+  }
+
+  async fetchDisacrdListSuggestions() {
+    const connection = await this.connect();
+    try {
+      const query = `SELECT * FROM  discard_menu_item_suggestion ;`;
+      const [queryResponse] = await connection.query(query);
+      return queryResponse;
+    } catch (err) {
+      console.error('Error fetching suggestions:', err);
       return [];
     } finally {
       await connection.end();

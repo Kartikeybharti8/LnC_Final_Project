@@ -19,8 +19,9 @@ export class ChefOptionsHandler {
         console.log("3. View Employee Votes");
         console.log("4. View items to Discard");
         console.log("5. Rollout Items to Employees before discard");
-        console.log("6. Discard Item from Menu-Items")
-        console.log("7. Logout");
+        console.log("6. View Employees Suggestions before discard")
+        console.log("7. Discard Item from Menu-Items")
+        console.log("8. Logout");
         const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
@@ -39,9 +40,12 @@ export class ChefOptionsHandler {
                 await this.rolloutDiscardItemforFeedback();
                 break;
             case "6":
-                await this.discardMenuItem();
+                await this.viewDisacrdListSuggestions();
                 break;
             case "7":
+                await this.discardMenuItem();
+                break;
+            case "8":
                 await this.logout();
                 break;
             default:
@@ -49,8 +53,15 @@ export class ChefOptionsHandler {
                 await this.showOptions();
         }
     }
+
+    private async viewDisacrdListSuggestions() {
+        const message: CustomMessage = { action: 'viewDisacrdListSuggestions', data: [] };
+        this.ws.send(JSON.stringify(message));
+        console.log("View discard items suggestions request sent to server.");
+    }
+    
     private async viewToBeDiscardedMenuItemList() {
-        const message: CustomMessage = { action: 'viewToBeDiscardedMenuItemList', data: [] };
+        const message: CustomMessage = { action: 'viewToBeDiscardedMenuItemList', data: ["Chef"] };
         this.ws.send(JSON.stringify(message));
         console.log("View discard items request sent to server.");
     }
@@ -63,7 +74,12 @@ export class ChefOptionsHandler {
     }
 
     private async rolloutDiscardItemforFeedback() {
-        throw new Error('Function not implemented.');
+        const itemId = await this.inputReader.getInput("Enter food ItemId: ");
+        const customObjective = "DeleteItem";
+        const notificationMessage = { itemId, customObjective };
+        const message: CustomMessage = { action: 'rolloutMenuNotify', data: notificationMessage };
+        this.ws.send(JSON.stringify(message));
+        console.log("Discard menu item rollout request sent to server.");
     }
 
     private async recommendMenuToRollOut() {

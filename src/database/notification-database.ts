@@ -15,7 +15,7 @@ class NotificationDatabaseManagement {
   async addCustomNotification(
     itemID: number,
     customObjective: string
-  ): Promise<any> {
+  ){
     const connection = await this.connect();
     try {
       const query = `INSERT INTO custom_notification (itemId, objective) VALUES (?, ?)`;
@@ -30,7 +30,7 @@ class NotificationDatabaseManagement {
   }
   async fetchItemIdsForCustomNotification(
     customObjective: string
-  ): Promise<any> {
+  ){
     const connection = await this.connect();
     try {
       const query = `SELECT itemId FROM custom_notification WHERE objective = ?`;

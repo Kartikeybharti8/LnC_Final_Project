@@ -21,6 +21,17 @@ class FeedbackHandler {
         }
     }
 
+    async addEmployeeDiscardItemSuggestion(ws: WebSocket, data: any) {
+        const { itemId, foodName, suggestions } = data;
+        try {
+            await this.feedbackDb.addEmployeeDiscardItemSuggestionsToDb(itemId, foodName, suggestions);
+            ws.send(JSON.stringify({ action: 'addedEmployeeSuggestion', data: 'User suggestions added successfully.' }));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add employee suggestions' }));
+        }
+    }
+
+
     async recommendMenuToRollOut(ws: WebSocket, data: any) {
         try{
             const feedbackList = await this.feedbackDb.fetchFeedbackFromDB();
@@ -30,6 +41,16 @@ class FeedbackHandler {
             ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
         }
     }
+
+    async viewDisacrdListSuggestions(ws: WebSocket, data: any) {
+        try{
+            const suggestions = await this.feedbackDb.fetchDisacrdListSuggestions();
+            ws.send(JSON.stringify({ action: 'viewSuggestions', data: suggestions }));
+        }catch (error){
+            ws.send(JSON.stringify({ action: 'error', data: 'Suggestions for menu items not found.' }));
+        }
+    }
+
 }
 
 export default FeedbackHandler;

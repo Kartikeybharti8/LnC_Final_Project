@@ -21,9 +21,13 @@ export default class RecommendationHandler {
 
     async viewToBeDiscardedMenuItemList(ws: WebSocket, data: any){
         try{
+            console.log(data);
             const discardItems = await this.recommendationDb.fetchItemsToDiscard();
-            console.log(discardItems)
-            ws.send(JSON.stringify({ action: 'viewToBeDiscardedMenuItemList', data: discardItems }));
+            if (data[0] == "Employee"){
+                ws.send(JSON.stringify({ action: 'viewEmployeeToBeDiscardedMenuItemList', data: discardItems }));
+            }else if (data[0] == "Chef"){
+                ws.send(JSON.stringify({ action: 'viewChefToBeDiscardedMenuItemList', data: discardItems }));
+            }
         }catch(error){
             ws.send(JSON.stringify({ action: 'error', data: 'Error while displaying discardItems' }));
         }
