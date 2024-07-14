@@ -42,17 +42,17 @@ class UserDatabaseManagement {
 
   async updateUserPreferenceDb(userId: number, preferences: any) {
     const connection = await this.connect();
-    const { spice_level, veg_type, sweet, food_origin } = preferences;
+    const { spiceLevel, vegType, sweet, foodOrigin } = preferences;
     try {
       const query = `
         UPDATE user
-        SET spice_level = ?,
-            veg_type = ?,
+        SET spiceLevel = ?,
+            vegType = ?,
             sweet = ?,
-            food_origin = ?
+            foodOrigin = ?
         WHERE userId = ? AND role = 'Employee';
     `;
-      const values = [spice_level, veg_type, sweet, food_origin, userId];
+      const values = [spiceLevel, vegType, sweet, foodOrigin, userId];
       await connection.query(query, values);
       console.log("Preferences updated successfully")
     } catch (err) {

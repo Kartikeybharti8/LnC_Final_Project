@@ -11,16 +11,12 @@ class MenuItemDatabaseManagement {
     return await this.dbConnection.connect();
   }
 
-  async addmenuItemToDb(
-    foodName: string,
-    foodPrice: string,
-    foodStatus: string,
-    mealType: string
-  ) {
+  async addmenuItemToDb(data: any) {
+    const { foodName, foodPrice, foodStatus, mealType, spiceLevel, vegType, sweet, foodOrigin } = data;
     const connection = await this.connect();
     try {
-      const query = `INSERT INTO menu_item (foodName, foodPrice, foodStatus, mealType) VALUES (?, ?, ?, ?)`;
-      const values = [foodName, foodPrice, foodStatus, mealType];
+      const query = `INSERT INTO menu_item (foodName, foodPrice, foodStatus, mealType, spiceLevel, vegType, sweet, foodOrigin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = [foodName, foodPrice, foodStatus, mealType, spiceLevel, vegType, sweet, foodOrigin];
       await connection.query(query, values);
       console.log("Menu Item added successfully");
     } catch (err) {
@@ -86,8 +82,8 @@ class MenuItemDatabaseManagement {
   }
   async fetchRolledOutMenuItemsFromDbByPreference(user: any, itemIds: number[]) {
     const connection = await this.connect();
-    const { spice_level, veg_type, sweet, food_origin } = user;
-    console.log(spice_level, veg_type, sweet, food_origin, itemIds);
+    const { spiceLevel, vegType, sweet, foodOrigin } = user;
+    console.log(spiceLevel, vegType, sweet, foodOrigin, itemIds);
 
     try {
         // Create placeholders for itemIds
@@ -98,14 +94,14 @@ class MenuItemDatabaseManagement {
             SELECT *
             FROM menu_item
             WHERE itemId IN (${placeholders})
-            AND veg_type = ?
-            AND spice_level = ?
+            AND vegType = ?
+            AND spiceLevel = ?
             AND sweet = ?
-            AND food_origin = ?
-            ORDER BY veg_type DESC, spice_level DESC, sweet DESC, food_origin DESC;
+            AND foodOrigin = ?
+            ORDER BY vegType DESC, spiceLevel DESC, sweet DESC, foodOrigin DESC;
         `;
 
-        const values = [...itemIds, veg_type, spice_level, sweet, food_origin];
+        const values = [...itemIds, vegType, spiceLevel, sweet, foodOrigin];
         const [menuItems] = await connection.query(sql, values);
         console.log("prefered: ",menuItems);
         return menuItems;

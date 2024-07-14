@@ -51,12 +51,12 @@ export class EmployeeOptionsHandler {
     }
 
     private async updateProfileWithPreferences(user: any) {
-        const spice_level = await this.inputReader.getInput("Enter your spice levels (Low/Medium/High): ");
-        const veg_type = await this.inputReader.getInput("Are you (Veg/Non-Veg/Eggiterian): ");
-        const sweet = await this.inputReader.getInput("Do you like sweet dishes: ");
-        const food_origin = await this.inputReader.getInput("Enter your likeness in food (South-Indian/North-Indian/Continental/Chinese): ");
+        const spiceLevel = await this.inputReader.getInput("Enter your spice levels (Low/Medium/High): ");
+        const vegType = await this.inputReader.getInput("Are you (Veg/Non-Veg/Eggiterian): ");
+        const sweet = await this.inputReader.getInput("Do you like sweet dishes(Yes/No): ");
+        const foodOrigin = await this.inputReader.getInput("Enter your likeness in food (South-Indian/North-Indian/Continental/Chinese): ");
         
-        const preferences =  { spice_level, veg_type, sweet, food_origin };
+        const preferences =  { spiceLevel, vegType, sweet, foodOrigin };
         const message: CustomMessage = { action: 'updateProfileWithPreferences', data: [preferences, user] };
         this.ws.send(JSON.stringify(message));
         console.log("Update employee preference request sent to server.");

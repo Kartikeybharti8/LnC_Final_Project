@@ -85,18 +85,3 @@ export class FoodRecommendationEngine {
     }
 
 }
-
-// // Example usage
-// const feedbackList: FoodItemFeedback[] = [
-//     { feedbackId: '1', itemId: '101', foodName: 'Pizza', userComment: 'This pizza was really delicious and tasty!', userRating: 5 },
-//     { feedbackId: '2', itemId: '101', foodName: 'Pizza', userComment: 'I loved this pizza, so fresh and well cooked.', userRating: 4 },
-//     { feedbackId: '3', itemId: '102', foodName: 'Burger', userComment: 'The burger was okay, but not great.', userRating: 3 },
-//     { feedbackId: '4', itemId: '102', foodName: 'Burger', userComment: 'Burger was not fresh and too salty.', userRating: 2 },
-//     { feedbackId: '5', itemId: '103', foodName: 'Pasta', userComment: 'Pasta was delicious and well cooked.', userRating: 4 }
-// ];
-
-// const recommendationEngine = new FoodRecommendationEngine();
-
-// recommendationEngine.generateFoodRecommendations(feedbackList).then(foodRatings => {
-//     console.log('Generated Food Recommendations:', foodRatings);
-// });

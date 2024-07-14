@@ -56,7 +56,12 @@ export class AdminOptionsHandler {
         const foodPrice = await this.inputReader.getInput("Enter food price: ");
         const foodStatus = await this.inputReader.getInput("Enter food status (Available/Not-Available): ");
         const mealType = await this.inputReader.getInput("Enter food type: ");
-        const menuItem = { foodName, foodPrice, foodStatus, mealType };
+        const spiceLevel = await this.inputReader.getInput("Enter food spice levels (Low/Medium/High): ");
+        const vegType = await this.inputReader.getInput("Are food (Veg/Non-Veg/Eggiterian): ");
+        const sweet = await this.inputReader.getInput("Is it a sweet dish (Yes/No): ");
+        const foodOrigin = await this.inputReader.getInput("Enter food origin (South-Indian/North-Indian/Continental/Chinese): ");
+
+        const menuItem = { foodName, foodPrice, foodStatus, mealType, spiceLevel, vegType, sweet, foodOrigin };
         const message: CustomMessage = { action: 'addMenuItem', data: [menuItem, user] };
         this.ws.send(JSON.stringify(message));
         console.log("Menu item add request sent to server.");

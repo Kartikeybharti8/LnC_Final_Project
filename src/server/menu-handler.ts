@@ -17,9 +17,8 @@ class MenuHandler {
     async handleAddMenuItem(ws: WebSocket, data: any) {
         const user = data[1];
         data = data[0];
-        const { foodName, foodPrice, foodStatus, mealType } = data;
         try {
-            await this.menuDb.addmenuItemToDb(foodName, foodPrice, foodStatus, mealType);
+            await this.menuDb.addmenuItemToDb(data);
             ws.send(JSON.stringify({ action: 'addedMenuItem', data: ['Menu item added successfully.', user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add Menu Item.' }));
