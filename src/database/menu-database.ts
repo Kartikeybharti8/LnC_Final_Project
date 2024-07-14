@@ -84,6 +84,37 @@ class MenuItemDatabaseManagement {
       await connection.end();
     }
   }
+  async fetchRolledOutMenuItemsFromDbByPreference(user: any, itemIds: number[]) {
+    const connection = await this.connect();
+    const { spice_level, veg_type, sweet, food_origin } = user;
+    console.log(spice_level, veg_type, sweet, food_origin, itemIds);
+
+    try {
+        // Create placeholders for itemIds
+        const placeholders = itemIds.map(() => '?').join(', ');
+        
+        // SQL query with conditions and item IDs
+        const sql = `
+            SELECT *
+            FROM menu_item
+            WHERE itemId IN (${placeholders})
+            AND veg_type = ?
+            AND spice_level = ?
+            AND sweet = ?
+            AND food_origin = ?
+            ORDER BY veg_type DESC, spice_level DESC, sweet DESC, food_origin DESC;
+        `;
+
+        const values = [...itemIds, veg_type, spice_level, sweet, food_origin];
+        const [menuItems] = await connection.query(sql, values);
+        console.log("prefered: ",menuItems);
+        return menuItems;
+    } catch (err) {
+        console.error("Error fetching menu items:", err);
+    } finally {
+        await connection.end();
+    }
+}
 
   async discardMenuItemFromDB(itemId: number){
     const connection = await this.connect();

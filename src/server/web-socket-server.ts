@@ -55,6 +55,9 @@ class AppServer {
             case 'addUser':
                 await this.userHandler.handleAddUser(ws, message.data);
                 break;
+            case 'updateProfileWithPreferences':
+                await this.userHandler.handleUpdateProfileWithPreferences(ws, message.data);
+                break;
             case 'addMenuItem':
                 await this.menuHandler.handleAddMenuItem(ws, message.data);
                 break;

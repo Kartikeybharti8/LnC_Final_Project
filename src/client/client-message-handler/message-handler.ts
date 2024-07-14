@@ -82,6 +82,9 @@ export class MessageHandler {
             case 'addedEmployeeSuggestion':
                 this.employeeHandler.handleAddedEmployeeSuggestion(message.data);
                 break;
+            case 'updatedUserPreference':
+                this.employeeHandler.handleUpdatedUserPreference(message.data);
+                break;
             case 'error':
                 this.handleError(message.data);
                 break;
@@ -112,9 +115,10 @@ export class MessageHandler {
         this.ws.send(JSON.stringify(message));
     }
 
-    private proceedAfterLogin(user: { userName: string; role: string }) {
+    private proceedAfterLogin(user: any) {
+        console.log(user)
         console.log(`Welcome ${user.userName}, Role: ${user.role}`);
-        this.roleOptionsHandler.showOptions(user.role);
+        this.roleOptionsHandler.showOptions(user);
     }
 
     public handleError = (data: any) => {

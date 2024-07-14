@@ -12,6 +12,7 @@ class UserHandler {
     async handleLogin(ws: WebSocket, data: any) {
         const { userName, userPassword } = data;
         const user: User = await this.userDb.fetchUserFromDb(userName, userPassword);
+        console.log(user);
         if (user) {
             ws.send(JSON.stringify({ action: 'login', data: user }));
         } else {
@@ -28,9 +29,22 @@ class UserHandler {
         const { userName, userPassword, role } = data;
         try {
             await this.userDb.addUserToDb(userName, userPassword, role);
-            ws.send(JSON.stringify({ action: 'addedUser', data: 'User added successfully.' }));
+            ws.send(JSON.stringify({ action: 'addedUser', data: ['User added successfully.', data] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add user.' }));
+        }
+    }
+
+    async handleUpdateProfileWithPreferences(ws: WebSocket, data: any) {
+        const user = data[1];
+        const preferences = data[0];
+        const userId = user.userId;
+        console.log("Preference:", preferences," userId:", userId);
+        try {
+            await this.userDb.updateUserPreferenceDb(userId, preferences);
+            ws.send(JSON.stringify({ action: 'updatedUserPreference', data: user}));
+        } catch (error) {
+            ws.send(JSON.stringify({ action: 'error', data: 'Failed to add user preference.' }));
         }
     }
 }

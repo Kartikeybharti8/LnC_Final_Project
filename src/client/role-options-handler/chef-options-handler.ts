@@ -12,7 +12,7 @@ export class ChefOptionsHandler {
         this.inputReader = inputReader;
     }
 
-    public async showOptions() {
+    public async showOptions(user: any) {
         console.log("Chef Options:");
         console.log("1. View Recommended Items to Roll Out");
         console.log("2. Roll Out Menu");
@@ -25,80 +25,80 @@ export class ChefOptionsHandler {
         const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
-                await this.recommendMenuToRollOut();
+                await this.recommendMenuToRollOut(user);
                 break;
             case "2":
-                await this.rollOutMenu();
+                await this.rollOutMenu(user);
                 break;
             case "3":
-                await this.viewEmployeeVotes();
+                await this.viewEmployeeVotes(user);
                 break;
             case "4": 
-                await this.viewToBeDiscardedMenuItemList();
+                await this.viewToBeDiscardedMenuItemList(user);
                 break;
             case "5":
-                await this.rolloutDiscardItemforFeedback();
+                await this.rolloutDiscardItemforFeedback(user);
                 break;
             case "6":
-                await this.viewDisacrdListSuggestions();
+                await this.viewDisacrdListSuggestions(user);
                 break;
             case "7":
-                await this.discardMenuItem();
+                await this.discardMenuItem(user);
                 break;
             case "8":
                 await this.logout();
                 break;
             default:
                 console.log("Invalid option.");
-                await this.showOptions();
+                await this.showOptions(user);
         }
     }
 
-    private async viewDisacrdListSuggestions() {
-        const message: CustomMessage = { action: 'viewDisacrdListSuggestions', data: [] };
+    private async viewDisacrdListSuggestions(user: any) {
+        const message: CustomMessage = { action: 'viewDisacrdListSuggestions', data: [user] };
         this.ws.send(JSON.stringify(message));
         console.log("View discard items suggestions request sent to server.");
     }
     
-    private async viewToBeDiscardedMenuItemList() {
-        const message: CustomMessage = { action: 'viewToBeDiscardedMenuItemList', data: ["Chef"] };
+    private async viewToBeDiscardedMenuItemList(user: any) {
+        const message: CustomMessage = { action: 'viewToBeDiscardedMenuItemList', data: [user] };
         this.ws.send(JSON.stringify(message));
         console.log("View discard items request sent to server.");
     }
 
-    private async discardMenuItem() {
+    private async discardMenuItem(user: any) {
         const itemId = await this.inputReader.getInput("Enter food ItemId: ");
-        const message: CustomMessage = { action: 'discardMenuItem', data: itemId };
+        const message: CustomMessage = { action: 'discardMenuItem', data: [itemId, user] };
         this.ws.send(JSON.stringify(message));
         console.log("Discard item request sent to server.");
     }
 
-    private async rolloutDiscardItemforFeedback() {
+    private async rolloutDiscardItemforFeedback(user: any) {
         const itemId = await this.inputReader.getInput("Enter food ItemId: ");
         const customObjective = "DeleteItem";
         const notificationMessage = { itemId, customObjective };
-        const message: CustomMessage = { action: 'rolloutMenuNotify', data: notificationMessage };
+        const message: CustomMessage = { action: 'rolloutMenuNotify', data: [notificationMessage, user] };
         this.ws.send(JSON.stringify(message));
         console.log("Discard menu item rollout request sent to server.");
     }
 
-    private async recommendMenuToRollOut() {
-        const message: CustomMessage = { action: 'recommendMenuToRollOut', data: [] };
+    private async recommendMenuToRollOut(user: any) {
+        const message: CustomMessage = { action: 'recommendMenuToRollOut', data: [user] };
         this.ws.send(JSON.stringify(message));
         console.log("View Recommended Menu for roll out.");
     }
 
-    private async rollOutMenu() {
+    private async rollOutMenu(user: any) {
         const itemId = await this.inputReader.getInput("Enter food ItemId: ");
         const customObjective = "RolloutItem";
         const notificationMessage = { itemId, customObjective };
-        const message: CustomMessage = { action: 'rolloutMenuNotify', data: notificationMessage };
+        const message: CustomMessage = { action: 'rolloutMenuNotify', data: [notificationMessage, user] };
         this.ws.send(JSON.stringify(message));
         console.log("Roll out menu item request sent to server.");
     }
 
-    private async viewEmployeeVotes() {
-        const message: CustomMessage = { action: 'viewEmployeeVotes', data: [] };
+    private async viewEmployeeVotes(user: any) {
+        const message: CustomMessage = { action: 'viewEmployeeVotes', data: [user] };
         this.ws.send(JSON.stringify(message));
         console.log("View Employee Votes request sent to server.");
     }

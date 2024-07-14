@@ -17,20 +17,20 @@ export class RoleOptionsHandler {
         this.employeeOptionsHandler = new EmployeeOptionsHandler(ws, inputReader);
     }
 
-    public showOptions(role: string) {
-        switch (role) {
+    public showOptions(user: any) {
+        const user_role = user.role;
+        switch (user_role) {
             case "Admin":
-                this.adminOptionsHandler.showOptions();
+                this.adminOptionsHandler.showOptions(user);
                 break;
             case "Employee":
-                this.employeeOptionsHandler.showOptions();
+                this.employeeOptionsHandler.showOptions(user);
                 break;
             case "Chef":
-                this.chefOptionsHandler.showOptions();
+                this.chefOptionsHandler.showOptions(user);
                 break;
             default:
-                console.log("Unknown role.");
-                
+                console.log("Unknown role you cannot continue...");       
         }
     }
 }

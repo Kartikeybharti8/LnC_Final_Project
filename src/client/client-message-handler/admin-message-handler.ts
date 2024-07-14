@@ -8,28 +8,38 @@ export class AdminMessageHandler {
     }
 
     public handleAddedUser = (data: any) => {
+        const user = data[1];
+        data = data[0];
         console.log(`Server: ${data}`);
-        this.roleOptionsHandler.showOptions("Admin");
+        this.roleOptionsHandler.showOptions(user);
     };
 
     public handleAddedMenuItem = (data: any) => {
+        const user = data[1];
+        data = data[0];
         console.log(`Server: ${data}`);
-        this.roleOptionsHandler.showOptions("Admin");
+        this.roleOptionsHandler.showOptions(user);
     };
 
     public handleUpdatedMenuPrice = (data: any) => {
+        const user = data[1];
+        data = data[0];
         console.log(`Server: ${data}`);
-        this.roleOptionsHandler.showOptions("Admin");
+        this.roleOptionsHandler.showOptions(user);
     };
 
     public handleUpdatedMenuStatus = (data: any) => {
+        const user = data[1];
+        data = data[0];
         console.log(`Server: ${data}`);
-        this.roleOptionsHandler.showOptions("Admin");
+        this.roleOptionsHandler.showOptions(user);
     };
 
     public handleViewMenuItems = (data: any) => {
+        const user = data[1];
+        data = data[0];
         console.log("Menu Items from db:");
         console.table(data);
-        this.roleOptionsHandler.showOptions("Admin");
+        this.roleOptionsHandler.showOptions(user);
     };
 }

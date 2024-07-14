@@ -12,26 +12,31 @@ class NotificationHandler {
     }
 
     async rolloutMenuNotify(ws: WebSocket, data: any) {
+        const user = data[1];
+        data = data[0];
         try {
             const { customObjective, itemId } = data;
             await this.notificationDb.addCustomNotification(itemId, customObjective);
-            ws.send(JSON.stringify({ action: 'rolloutMenuNotify', data: "Menu items rolled out successfully." }));
+            ws.send(JSON.stringify({ action: 'rolloutMenuNotify', data: ["Menu items rolled out successfully.", user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to roll out menu item.' }));
         }
     }
 
     async voteRollOutMenuItem(ws: WebSocket, data: any) {
+        const user = data[1];
+        data = data[0];
         try {
             const { customObjective, itemId } = data;
             await this.notificationDb.addCustomNotification(itemId, customObjective);
-            ws.send(JSON.stringify({ action: 'voteRollOutMenuItem', data: "Menu Item voted successfully." }));
+            ws.send(JSON.stringify({ action: 'voteRollOutMenuItem', data: ["Menu Item voted successfully.", user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to vote menu item' }));
         }
     }
 
     async viewEmployeeVotes(ws: WebSocket, data: any) {
+        const user = data[0];
         try {
             const itemIdCount: { [key: number]: number } = {};
             const employeesVotes = await this.notificationDb.fetchItemIdsForCustomNotification('EmployeeVoted');
@@ -54,7 +59,7 @@ class NotificationHandler {
                 };
             });
 
-            ws.send(JSON.stringify({ action: 'viewMenuItemsWithEmployeeVotes', data: menuItemsWithEmployeeVotes }));
+            ws.send(JSON.stringify({ action: 'viewMenuItemsWithEmployeeVotes', data: [menuItemsWithEmployeeVotes, user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to view employee feedback' }));
         }

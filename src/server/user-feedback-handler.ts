@@ -12,20 +12,24 @@ class FeedbackHandler {
     }
 
     async handleAddEmployeeFeedback(ws: WebSocket, data: any) {
+        const user = data[1];
+        data = data[0];
         const { itemId, foodName, userRating, userComment } = data;
         try {
             await this.feedbackDb.addUserFeedbackToDb(itemId, foodName, userRating, userComment);
-            ws.send(JSON.stringify({ action: 'addedEmployeeFeedback', data: 'User feedback added successfully.' }));
+            ws.send(JSON.stringify({ action: 'addedEmployeeFeedback', data: ['User feedback added successfully.', user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add employee feedback' }));
         }
     }
 
     async addEmployeeDiscardItemSuggestion(ws: WebSocket, data: any) {
+        const user = data[1];
+        data = data[0];
         const { itemId, foodName, suggestions } = data;
         try {
             await this.feedbackDb.addEmployeeDiscardItemSuggestionsToDb(itemId, foodName, suggestions);
-            ws.send(JSON.stringify({ action: 'addedEmployeeSuggestion', data: 'User suggestions added successfully.' }));
+            ws.send(JSON.stringify({ action: 'addedEmployeeSuggestion', data: ['User suggestions added successfully.', user] }));
         } catch (error) {
             ws.send(JSON.stringify({ action: 'error', data: 'Failed to add employee suggestions' }));
         }
@@ -33,19 +37,21 @@ class FeedbackHandler {
 
 
     async recommendMenuToRollOut(ws: WebSocket, data: any) {
+        const user = data[0];
         try{
             const feedbackList = await this.feedbackDb.fetchFeedbackFromDB();
             const recommendations = await this.recommendationEngine.generateFoodRecommendations(ws, feedbackList);
-            ws.send(JSON.stringify({ action: 'recommendMenuToRollOut', data: recommendations }));
+            ws.send(JSON.stringify({ action: 'recommendMenuToRollOut', data: [recommendations, user] }));
         }catch (error){
             ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
         }
     }
 
     async viewDisacrdListSuggestions(ws: WebSocket, data: any) {
+        const user = data[0];
         try{
             const suggestions = await this.feedbackDb.fetchDisacrdListSuggestions();
-            ws.send(JSON.stringify({ action: 'viewSuggestions', data: suggestions }));
+            ws.send(JSON.stringify({ action: 'viewSuggestions', data: [suggestions, user] }));
         }catch (error){
             ws.send(JSON.stringify({ action: 'error', data: 'Suggestions for menu items not found.' }));
         }

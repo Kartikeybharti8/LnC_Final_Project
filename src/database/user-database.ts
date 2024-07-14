@@ -39,17 +39,28 @@ class UserDatabaseManagement {
       await connection.end();
     }
   }
+
+  async updateUserPreferenceDb(userId: number, preferences: any) {
+    const connection = await this.connect();
+    const { spice_level, veg_type, sweet, food_origin } = preferences;
+    try {
+      const query = `
+        UPDATE user
+        SET spice_level = ?,
+            veg_type = ?,
+            sweet = ?,
+            food_origin = ?
+        WHERE userId = ? AND role = 'Employee';
+    `;
+      const values = [spice_level, veg_type, sweet, food_origin, userId];
+      await connection.query(query, values);
+      console.log("Preferences updated successfully")
+    } catch (err) {
+      console.error('Error updating preferences:', err);
+    } finally {
+      await connection.end();
+    }
+  }
 }
 
 export default UserDatabaseManagement;
-
-// async function main() {
-//   const userDb = new UserDatabaseManagement();
-
-//   // // Add a user to the database
-//   // await userDb.addUserToDb('Kartikey', 'Kartikey@123', 'Admin');
-
-//   // Fetch a user from the database
-//   const user = await userDb.fetchUserFromDb('Kartikey', 'Kartikey@123');
-//   console.log("hi", user);
-// }
