@@ -14,38 +14,42 @@ export class ChefOptionsHandler {
 
     public async showOptions(user: any) {
         console.log("Chef Options:");
-        console.log("1. View Recommended Items to Roll Out");
-        console.log("2. Roll Out Menu");
-        console.log("3. View Employee Votes");
-        console.log("4. View items to Discard");
-        console.log("5. Rollout Items to Employees before discard");
-        console.log("6. View Employees Suggestions before discard")
-        console.log("7. Discard Item from Menu-Items")
-        console.log("8. Logout");
+        console.log("1. View recommended items to roll out");
+        console.log("2. View full menu list")
+        console.log("3. Roll out menu");
+        console.log("4. View employee votes");
+        console.log("5. View items to discard");
+        console.log("6. Rollout items to employees before discard");
+        console.log("7. View employees suggestions before discard")
+        console.log("8. Discard item from menu-items")
+        console.log("9. Logout");
         const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":
                 await this.recommendMenuToRollOut(user);
                 break;
             case "2":
-                await this.rollOutMenu(user);
+                await this.viewMenuItems(user);
                 break;
             case "3":
+                await this.rollOutMenu(user);
+                break;
+            case "4":
                 await this.viewEmployeeVotes(user);
                 break;
-            case "4": 
+            case "5": 
                 await this.viewToBeDiscardedMenuItemList(user);
                 break;
-            case "5":
+            case "6":
                 await this.rolloutDiscardItemforFeedback(user);
                 break;
-            case "6":
+            case "7":
                 await this.viewDisacrdListSuggestions(user);
                 break;
-            case "7":
+            case "8":
                 await this.discardMenuItem(user);
                 break;
-            case "8":
+            case "9":
                 await this.logout();
                 break;
             default:
@@ -54,6 +58,12 @@ export class ChefOptionsHandler {
         }
     }
 
+    private async viewMenuItems(user: any) {
+        const message: CustomMessage = { action: 'viewMenuItems', data: [user] };
+        this.ws.send(JSON.stringify(message));
+        console.log("View Menu Items.");
+    }
+    
     private async viewDisacrdListSuggestions(user: any) {
         const message: CustomMessage = { action: 'viewDisacrdListSuggestions', data: [user] };
         this.ws.send(JSON.stringify(message));

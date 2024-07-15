@@ -49,4 +49,11 @@ export class ChefMessageHandler {
         this.roleOptionsHandler.showOptions(user);
     }
 
+    public handleViewMenuItemsChef = (data: any) => {
+        const user = data[1];
+        data = data[0];
+        console.log("Menu Items from db:");
+        console.table(data);
+        this.roleOptionsHandler.showOptions(user);
+    };
 }

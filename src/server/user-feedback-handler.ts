@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import FoodFeedbackDatabaseManagement from '../database/user-feedback';
+import FoodFeedbackDatabaseManagement from './database/user-feedback';
 import {FoodRecommendationEngine} from '../services/recommendation_engine';
 
 

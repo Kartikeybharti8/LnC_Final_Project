@@ -35,7 +35,6 @@ class NotificationDatabaseManagement {
     try {
       const query = `SELECT itemId FROM custom_notification WHERE objective = ?`;
       const [itemIds]: any = await connection.query(query, [customObjective]);
-      console.log(itemIds);
       return itemIds;
     } catch (err) {
       console.error("Error getting Ids:", err);

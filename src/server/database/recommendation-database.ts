@@ -1,5 +1,5 @@
 import { CafeteriaDatabaseConnection } from "./create-connection";
-import { FoodItemRating } from "../services/recommendation_engine";
+import { FoodItemRating } from "../../services/recommendation_engine";
 
 export default class RecommendationDatabaseHandler{
     private dbConnection: CafeteriaDatabaseConnection;
@@ -40,7 +40,6 @@ export default class RecommendationDatabaseHandler{
         `;
         try{
             const [discardItems] = await connection.query(sql);
-            console.log('Discard Items fetched:', discardItems);
             return discardItems;
         } catch (err) {
             console.error('Error fetching discard Items:', err);

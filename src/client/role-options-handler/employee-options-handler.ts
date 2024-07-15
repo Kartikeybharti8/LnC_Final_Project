@@ -20,7 +20,6 @@ export class EmployeeOptionsHandler {
         console.log("5. Provide Feedback to items before discard");
         console.log("6. Update your profile with your preferences")
         console.log("7. Logout");
-        console.log(user)
         const option = await this.inputReader.getInput("Choose an option by index: ");
         switch (option) {
             case "1":

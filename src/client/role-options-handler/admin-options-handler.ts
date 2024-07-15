@@ -68,7 +68,7 @@ export class AdminOptionsHandler {
     }
 
     private async updateMenuItem(user: any) {
-        console.log("Update Menu Item functionality not implemented yet.");
+        console.log("Update Menu Item:");
         console.log("1. Update Menu Price");
         console.log("2. Update Menu Status");
         const option = await this.inputReader.getInput("Choose an option by index: ");

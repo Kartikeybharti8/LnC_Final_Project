@@ -67,12 +67,10 @@ class MenuItemDatabaseManagement {
   }
   async fetchRolledOutMenuItemsFromDb(itemIds: number[]) {
     const connection = await this.connect();
-    console.log(itemIds);
     try {
         const placeholders = itemIds.map(() => '?').join(', ');
         const query = `SELECT * FROM menu_item WHERE itemId IN (${placeholders})`;
         const [menuItems] = await connection.query(query, itemIds);
-        console.log(menuItems);
         return menuItems;
     } catch (err) {
       console.error("Error fetching menuItem:", err);
@@ -83,13 +81,10 @@ class MenuItemDatabaseManagement {
   async fetchRolledOutMenuItemsFromDbByPreference(user: any, itemIds: number[]) {
     const connection = await this.connect();
     const { spiceLevel, vegType, sweet, foodOrigin } = user;
-    console.log(spiceLevel, vegType, sweet, foodOrigin, itemIds);
 
     try {
-        // Create placeholders for itemIds
         const placeholders = itemIds.map(() => '?').join(', ');
         
-        // SQL query with conditions and item IDs
         const sql = `
             SELECT *
             FROM menu_item
@@ -103,7 +98,6 @@ class MenuItemDatabaseManagement {
 
         const values = [...itemIds, vegType, spiceLevel, sweet, foodOrigin];
         const [menuItems] = await connection.query(sql, values);
-        console.log("prefered: ",menuItems);
         return menuItems;
     } catch (err) {
         console.error("Error fetching menu items:", err);
@@ -114,7 +108,6 @@ class MenuItemDatabaseManagement {
 
   async discardMenuItemFromDB(itemId: number){
     const connection = await this.connect();
-    console.log(itemId);
     try{
       const query = "DELETE FROM menu_item WHERE itemId = ?"
       await connection.query(query, itemId);

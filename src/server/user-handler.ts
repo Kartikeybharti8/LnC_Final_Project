@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
 import { User } from '../models/user';
-import UserDatabaseManagement from '../database/user-database';
+import UserDatabaseManagement from './database/user-database';
 
 class UserHandler {
     private userDb: UserDatabaseManagement;
@@ -12,7 +12,6 @@ class UserHandler {
     async handleLogin(ws: WebSocket, data: any) {
         const { userName, userPassword } = data;
         const user: User = await this.userDb.fetchUserFromDb(userName, userPassword);
-        console.log(user);
         if (user) {
             ws.send(JSON.stringify({ action: 'login', data: user }));
         } else {

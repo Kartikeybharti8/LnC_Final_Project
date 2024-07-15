@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
-import NotificationDatabaseManagement from '../database/notification-database';
-import MenuItemDatabaseManagement from '../database/menu-database';
+import NotificationDatabaseManagement from './database/notification-database';
+import MenuItemDatabaseManagement from './database/menu-database';
 
 class NotificationHandler {
     private notificationDb: NotificationDatabaseManagement;

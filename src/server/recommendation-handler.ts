@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
 import { User } from '../models/user';
-import RecommendationDatabaseHandler from '../database/recommendation-database';
+import RecommendationDatabaseHandler from './database/recommendation-database';
 import { FoodItemRating } from '../services/recommendation_engine';
 
 export default class RecommendationHandler {
@@ -11,7 +11,6 @@ export default class RecommendationHandler {
     }
 
     async storeRecommendationsToDatabase(ws: WebSocket, foodRatings: FoodItemRating[]){
-        console.log('Storing recommendations to the database:', foodRatings);
         try {
             await this.recommendationDb.storeRecommendationsToDatabase(foodRatings);
         } catch (error) {
@@ -20,13 +19,12 @@ export default class RecommendationHandler {
     }
 
     async viewToBeDiscardedMenuItemList(ws: WebSocket, data: any){
-        const user = data;
+        const user = data[0];
         try{
-            console.log(data);
             const discardItems = await this.recommendationDb.fetchItemsToDiscard();
-            if (user.role == "Employee"){
+            if (user.role === "Employee"){
                 ws.send(JSON.stringify({ action: 'viewEmployeeToBeDiscardedMenuItemList', data: [discardItems, user] }));
-            }else if (user.role == "Chef"){
+            }else if (user.role === "Chef"){
                 ws.send(JSON.stringify({ action: 'viewChefToBeDiscardedMenuItemList', data: [discardItems, user] }));
             }
         }catch(error){

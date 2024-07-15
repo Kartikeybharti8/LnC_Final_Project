@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
-import MenuItemDatabaseManagement from '../database/menu-database';
-import NotificationDatabaseManagement from '../database/notification-database';
-import UserDatabaseManagement from '../database/user-database';
+import MenuItemDatabaseManagement from './database/menu-database';
+import NotificationDatabaseManagement from './database/notification-database';
+import UserDatabaseManagement from './database/user-database';
 
 class MenuHandler {
     private menuDb: MenuItemDatabaseManagement;
@@ -53,14 +53,17 @@ class MenuHandler {
         const user = data[0];
         const menuItems = await this.menuDb.fetchMenuItemsFromDb();
         if (menuItems) {
-            ws.send(JSON.stringify({ action: 'viewMenuItems', data: [menuItems, user] }));
+            if(user.role == "Admin" ){
+                ws.send(JSON.stringify({ action: 'viewMenuItemsAdmin', data: [menuItems, user] }));
+            }else if(user.role == "Chef"){
+                ws.send(JSON.stringify({ action: 'viewMenuItemsChef', data: [menuItems, user] }));
+            }
         } else {
             ws.send(JSON.stringify({ action: 'error', data: 'Menu Items not found.' }));
         }
     }
 
     async viewRolledOutMenu(ws: WebSocket, data: any) {
-        console.log("User:", data);
         const user = data;
         const updatedUser = await this.userDb.fetchUserFromDb(user.userName, user.userPassword);
         const itemObjects = await this.notificationDb.fetchItemIdsForCustomNotification('RolloutItem');

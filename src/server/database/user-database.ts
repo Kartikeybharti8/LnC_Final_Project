@@ -1,4 +1,3 @@
-import { User } from '../models/user';
 import { CafeteriaDatabaseConnection } from './create-connection';
 
 class UserDatabaseManagement {

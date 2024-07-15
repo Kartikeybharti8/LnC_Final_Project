@@ -46,8 +46,11 @@ export class MessageHandler {
             case 'updatedMenuStatus':
                 this.adminHandler.handleUpdatedMenuStatus(message.data);
                 break;
-            case 'viewMenuItems':
-                this.adminHandler.handleViewMenuItems(message.data);
+            case 'viewMenuItemsAdmin':
+                this.adminHandler.handleViewMenuItemsAdmin(message.data);
+                break;
+            case 'viewMenuItemsChef':
+                this.chefHandler.handleViewMenuItemsChef(message.data);
                 break;
             case 'recommendMenuToRollOut':
                 this.chefHandler.handleRecommendMenuToRollOut(message.data);
@@ -116,7 +119,6 @@ export class MessageHandler {
     }
 
     private proceedAfterLogin(user: any) {
-        console.log(user)
         console.log(`Welcome ${user.userName}, Role: ${user.role}`);
         this.roleOptionsHandler.showOptions(user);
     }
@@ -126,6 +128,6 @@ export class MessageHandler {
     };
 
     public handleUnknownAction = () => {
-        console.log('Unknown action received from server.');
+        console.log('Unknown action received from server cannot continue.');
     };
 }

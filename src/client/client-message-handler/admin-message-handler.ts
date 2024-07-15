@@ -35,7 +35,7 @@ export class AdminMessageHandler {
         this.roleOptionsHandler.showOptions(user);
     };
 
-    public handleViewMenuItems = (data: any) => {
+    public handleViewMenuItemsAdmin = (data: any) => {
         const user = data[1];
         data = data[0];
         console.log("Menu Items from db:");
